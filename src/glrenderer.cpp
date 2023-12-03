@@ -12,8 +12,9 @@ GLRenderer::GLRenderer(QWidget *parent)
     : QOpenGLWidget(parent),
       m_lightPos(10,0,0,1),
       m_ka(0.1),
-      m_kd(0.8),
+      m_kd(0.2),
       m_ks(1),
+      m_kt(0.8), // Might want to change these values
       m_shininess(15),
       m_angleX(6),
       m_angleY(0),
@@ -215,10 +216,14 @@ void GLRenderer::initializeGL()
 
     // Enable and define attribute 0 to store vertex positions
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,6 * sizeof(GLfloat),reinterpret_cast<void *>(0));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,6 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+
+    // UV Mapping
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
 
     // Clean-up bindings
     glBindVertexArray(0);
@@ -263,6 +268,9 @@ void GLRenderer::paintGL()
         glUniform1f(glGetUniformLocation(m_shader,"k_s"),m_ks);
         glUniform3fv(glGetUniformLocation(m_shader,"camera_position"),1,&camera_world_space[0]);
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
+
+        // UV mapping
+        glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
 
         // Draw Command
         glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);

@@ -48,6 +48,7 @@ private:
     float m_ka;
     float m_kd;
     float m_ks;
+    float m_kt; // UV mapping for texture component
     float m_shininess;
 
     QPoint m_prevMousePos;

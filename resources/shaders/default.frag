@@ -20,6 +20,13 @@ uniform float k_s;
 uniform vec3 camera_position;
 uniform float shininess;
 
+// UV Mapping
+in vec2 UV;
+uniform float k_t;
+uniform sampler2D objectTexture;
+
+// Normal Mapping
+
 void main() {
     // Remember that you need to renormalize vectors here if you want them to be normalized
 
@@ -46,5 +53,12 @@ void main() {
 
     // specular = ks * dot (Reflect, surface to camera)^shininess
     float specular = k_s * pow(clamp(dot(reflected_ray,surface_to_camera_ray),0.f,1.f),shininess);
-    fragColor = vec4(ambient + diffuse + specular,ambient + diffuse + specular,ambient + diffuse + specular,1.f);
+
+    // UV Mapping
+    vec3 textureColor = texture(objectTexture, UV).rgb * k_t;
+
+    float sum = ambient + diffuse + specular + textureColor;
+
+    fragColor = vec4(sum, sum, sum, 1.f);
+
 }
