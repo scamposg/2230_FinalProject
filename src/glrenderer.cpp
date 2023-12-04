@@ -57,6 +57,11 @@ std::vector<glm::mat4> create_model_matrices(){
     return matrices;
 }
 
+void insertVec2(std::vector<float> &data, glm::vec2 v) {
+    data.push_back(v.x);
+    data.push_back(v.y);
+}
+
 void insertVec3(std::vector<float> &data, glm::vec3 v) {
     data.push_back(v.x);
     data.push_back(v.y);
@@ -74,23 +79,35 @@ void makeTile(glm::vec3 topLeft,
     glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
     glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
 
+    glm::vec2 top_left_uv = glm::vec2(0,1);
+    glm::vec2 bottom_left_uv = glm::vec2(0,0);
+    glm::vec2 top_right_uv = glm::vec2(1,1);
+    glm::vec2 bottom_right_uv = glm::vec2(1,0);
+
+
     insertVec3(m_vertexData,topLeft);
     insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
 
     insertVec3(m_vertexData,bottomLeft);
     insertVec3(m_vertexData,bottom_left_normal);
+    insertVec2(m_vertexData,bottom_left_uv);
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
 
     insertVec3(m_vertexData,topRight);
     insertVec3(m_vertexData,top_right_normal);
+    insertVec2(m_vertexData,top_right_uv);
 
     insertVec3(m_vertexData,topLeft);
     insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
 
 }
 
@@ -223,7 +240,7 @@ void GLRenderer::initializeGL()
 
     // UV Mapping
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
 
     // Clean-up bindings
     glBindVertexArray(0);
