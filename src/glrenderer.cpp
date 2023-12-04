@@ -4,6 +4,8 @@
 #include "src/shaderloader.h"
 
 #include <QMouseEvent>
+#include <unistd.h>
+//#include <Windows.h>
 #include "glm/gtc/constants.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
@@ -33,11 +35,9 @@ GLRenderer::~GLRenderer()
 
 
 
-std::vector<glm::mat4> create_model_matrices(){
+std::vector<glm::mat4> create_model_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2){
     std::vector<glm::mat4> matrices;
-    glm::vec3 P0(0,0,20);
-    glm::vec3 P1(0,0,-20);
-    glm::vec3 P2(0,10,-10);
+
 
     matrices.clear();
     float interval = 2.f;
@@ -207,6 +207,9 @@ std::vector<float> generateCubeData()
 
 void GLRenderer::initializeGL()
 {
+    m_timer = startTimer(1000/60);
+    m_elapsedTimer.start();
+
     // Initialize GL extension wrangler
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
@@ -249,8 +252,14 @@ void GLRenderer::initializeGL()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
-    m_matrices = create_model_matrices();
+    m_matrices = create_model_matrices(m_curve_0,m_curve_1,m_curve_2);
     m_view_original = get_view_matrix();
+}
+
+void GLRenderer::play_scene(){
+    if (m_to_play) m_to_play = false;
+    else m_to_play = true;
+
 }
 
 void GLRenderer::paintGL()
@@ -326,6 +335,22 @@ void GLRenderer::wheelEvent(QWheelEvent *event) {
     // Update zoom based on event parameter
     m_zoom -= event->angleDelta().y() / 100.f;
     rebuildMatrices();
+}
+
+void GLRenderer::timerEvent(QTimerEvent *event) {
+    int elapsedms   = m_elapsedTimer.elapsed();
+    float deltaTime = elapsedms * 0.001f;
+    m_elapsedTimer.restart();
+
+    // Use deltaTime and m_keyMap here to move around
+    if (m_to_play){
+        m_curve_1 = m_curve_1 + deltaTime*glm::vec3(0,0,0);
+        m_curve_2 = m_curve_2 + deltaTime*glm::vec3(0,5,5);
+        m_matrices = create_model_matrices(m_curve_0,m_curve_1,m_curve_2);
+    }
+
+    update(); // asks for a PaintGL() call to occur
+    m_elapsedTimer.restart();
 }
 
 void GLRenderer::rebuildMatrices() {

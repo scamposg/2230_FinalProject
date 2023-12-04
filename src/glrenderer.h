@@ -7,6 +7,7 @@
 
 #include "GL/glew.h" // Must always be first include
 #include <QOpenGLWidget>
+#include <QElapsedTimer>
 #include "glm/glm.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
@@ -15,25 +16,39 @@ class GLRenderer : public QOpenGLWidget
 {
 public:
     GLRenderer(QWidget *parent = nullptr);
+    void play_scene();
     ~GLRenderer();
+
+public slots:
+    void tick(QTimerEvent* event);                      // Called once per tick of m_timer
 
 protected:
     void initializeGL()                  override; // Called once at the start of the program
     void paintGL()                       override; // Called every frame in a loop
     void resizeGL(int width, int height) override; // Called when window size changes
-
+    void timerEvent(QTimerEvent *event)  override;
     void mousePressEvent(QMouseEvent *e) override; // Used for camera movement
     void mouseMoveEvent(QMouseEvent *e)  override; // Used for camera movement
     void wheelEvent(QWheelEvent *e)      override; // Used for camera movement
     void rebuildMatrices();                        // Used for camera movement
 
 private:
+
+    // Tick Related Variables
+    int m_timer;                                        // Stores timer which attempts to run ~60 times per second
+    QElapsedTimer m_elapsedTimer;                       // Stores timer which keeps track of actual time between frames
+    bool m_to_play = false;
+
     GLuint m_shader;     // Stores id of shader program
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;
 
     std::vector<glm::mat4> m_matrices;
+    glm::vec3 m_curve_0 = glm::vec3(0,0,20);
+    glm::vec3 m_curve_1 = glm::vec3(0,0,-20);
+    glm::vec3 m_curve_2 = glm::vec3(0,0,-30);
+
     glm::mat4 m_view_original;
     glm::mat4 m_view;
     glm::mat4 m_proj  = glm::mat4(1);

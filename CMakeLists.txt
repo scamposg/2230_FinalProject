@@ -31,6 +31,7 @@ add_executable(${PROJECT_NAME}
     src/glrenderer.h
     src/mainwindow.h
     src/shaderloader.h
+    src/aspectratiowidget/aspectratiowidget.hpp
     src/camera.cpp
 )
 # Specifies other files
