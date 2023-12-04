@@ -43,11 +43,14 @@ private:
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;
+    glm::vec3 building_ambient = glm::vec3(0.969,0.925,0.698);
+    glm::vec3 building_diffuse = glm::vec3(1.0,0.965,0.784);
+    glm::vec3 building_specular = glm::vec3(1.0,0.98,0.875);
 
     std::vector<glm::mat4> m_matrices;
     glm::vec3 m_curve_0 = glm::vec3(0,0,20);
-    glm::vec3 m_curve_1 = glm::vec3(0,0,-20);
-    glm::vec3 m_curve_2 = glm::vec3(0,0,-30);
+    glm::vec3 m_curve_1 = glm::vec3(0,0,-30);
+    glm::vec3 m_curve_2 = glm::vec3(0,0,-40);
 
     glm::mat4 m_view_original;
     glm::mat4 m_view;
@@ -58,7 +61,7 @@ private:
 
     glm::mat4 get_view_matrix();
 
-    glm::vec4 m_lightPos; // The world-space position of the point light
+    glm::vec4 m_light_direction; // The world-space position of the point light
 
     float m_ka;
     float m_kd;

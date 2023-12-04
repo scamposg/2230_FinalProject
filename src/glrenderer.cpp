@@ -12,7 +12,7 @@
 
 GLRenderer::GLRenderer(QWidget *parent)
     : QOpenGLWidget(parent),
-      m_lightPos(10,0,0,1),
+      m_light_direction(0.1,-100,-10,0),
       m_ka(0.1),
       m_kd(0.2),
       m_ks(1),
@@ -40,7 +40,7 @@ std::vector<glm::mat4> create_model_matrices(glm::vec3 P0, glm::vec3 P1, glm::ve
 
 
     matrices.clear();
-    float interval = 2.f;
+    float interval = 4.f;
     float max = 10.f;
     for (float x = -max; x < max; ){
         for (float t = 0.0; t < 1.0; ){
@@ -50,7 +50,7 @@ std::vector<glm::mat4> create_model_matrices(glm::vec3 P0, glm::vec3 P1, glm::ve
             glm::vec3 ray = glm::cross(next_curve-curve,glm::vec3(-1,0,0));
             glm::vec3 up(0,1,0);
             float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up)));
-            glm::mat4 ctm = glm::translate(glm::vec3(x,curve.y,curve.z))*glm::rotate(theta,glm::vec3(1,0,0));
+            glm::mat4 ctm = glm::translate(glm::vec3(x,curve.y,curve.z))*glm::rotate(theta,glm::vec3(1,0,0))*glm::scale(glm::vec3(1,1,4));
             matrices.push_back(ctm);
 
         }
@@ -271,28 +271,33 @@ void GLRenderer::paintGL()
         // Bind Sphere Vertex Data
         glBindVertexArray(m_cube_vao);
 
-        // Task 2: activate the shader program by calling glUseProgram with `m_shader`
+        // Activate the shader program by calling glUseProgram with `m_shader`
         glUseProgram(m_shader);
 
-        // Task 6: pass in m_model as a uniform into the shader program
+        // Pass in building color data
+        glUniform3fv(glGetUniformLocation(m_shader,"object_ambient"),1,&building_ambient[0]);
+        glUniform3fv(glGetUniformLocation(m_shader,"object_diffuse"),1,&building_diffuse[0]);
+        glUniform3fv(glGetUniformLocation(m_shader,"object_specular"),1,&building_specular[0]);
+
+        // pass in m_model as a uniform into the shader program
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_matrices[i][0][0]);
         glm::mat4 model_matrix_glm = glm::mat4(m_matrices[i]);
         glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_matrices[i]));
         glUniformMatrix3fv(glGetUniformLocation(m_shader,"inverse_transpose_matrix"),1,GL_FALSE,&inverse_transpose[0][0]);
 
-        // Task 7: pass in m_view and m_proj
+        // pass in m_view and m_proj
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"view_matrix"),1,GL_FALSE,&m_view[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"projection_matrix"),1,GL_FALSE,&m_proj[0][0]);
 
 
-        // Task 12: pass m_ka into the fragment shader as a uniform
+        // pass m_ka into the fragment shader as a uniform
         glUniform1f(glGetUniformLocation(m_shader,"k_a"),m_ka);
 
-        // Task 13: pass light position and m_kd into the fragment shader as a uniform
+        // pass light position and m_kd into the fragment shader as a uniform
         glUniform1f(glGetUniformLocation(m_shader,"k_d"),m_kd);
-        glUniform3fv(glGetUniformLocation(m_shader,"world_space_light_position"),1,&m_lightPos[0]);
+        glUniform3fv(glGetUniformLocation(m_shader,"world_space_light_direction"),1,&m_light_direction[0]);
 
-        // Task 14: pass shininess, m_ks, and world-space camera position
+        // pass shininess, m_ks, and world-space camera position
         glm::vec3 camera_world_space = glm::vec3(glm::inverse(m_view) * glm::vec4(0.f,0.f,0.f,1.f));
         glUniform1f(glGetUniformLocation(m_shader,"k_s"),m_ks);
         glUniform3fv(glGetUniformLocation(m_shader,"camera_position"),1,&camera_world_space[0]);
