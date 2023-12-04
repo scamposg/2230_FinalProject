@@ -42,7 +42,7 @@ std::vector<glm::mat4> create_model_matrices(glm::vec3 P0, glm::vec3 P1, glm::ve
     matrices.clear();
     float interval = 4.f;
     float max = 10.f;
-    for (float x = -max; x < max; ){
+    for (float x = -max; x <= max; ){
         for (float t = 0.0; t < 1.0; ){
             glm::vec3 curve = (1.f-t*t) * P0 + 2.f*(1.f-t)*t*P1 + t*t*P2;
             t= t+0.1;
@@ -374,6 +374,5 @@ void GLRenderer::rebuildMatrices() {
     m_view = glm::lookAt(eye,glm::vec3(0,0,0),m_camera_up);
 
     m_proj = glm::perspective(glm::radians(45.0),1.0 * width() / height(),0.01,100.0);
-
     update();
 }

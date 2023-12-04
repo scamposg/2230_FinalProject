@@ -54,12 +54,18 @@ private:
 
     glm::mat4 m_view_original;
     glm::mat4 m_view;
-    glm::mat4 m_proj  = glm::mat4(1);
-    glm::vec3 m_camera_pos = glm::vec3(0,20,10);
-    glm::vec3 m_camera_look = glm::vec3(0,-1,-1);
+    glm::mat4 m_proj;
+
+    glm::vec3 m_camera_pos = glm::vec3(0,0,20);
+    glm::vec3 m_camera_look = glm::vec3(0,0,-1);
     glm::vec3 m_camera_up = glm::vec3(0,1,0);
+    double m_near_plane = 0.1f;
+    double m_far_plane = 100.f;
+    double m_camera_width = glm::radians(45.0);
+    double m_camera_height = glm::radians(45.0);
 
     glm::mat4 get_view_matrix();
+    glm::mat4 get_proj_matrix();
 
     glm::vec4 m_light_direction; // The world-space position of the point light
 

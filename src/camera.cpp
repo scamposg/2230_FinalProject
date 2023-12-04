@@ -1,7 +1,7 @@
 #include "glrenderer.h"
 
 glm::mat4 GLRenderer::get_view_matrix() {
-    // Optional TODO: implement the getter or make your own design
+
     //create Mtranslate from inverse m_camera_position
     glm::vec4 col0(1.0,0.0,0.0,0.0);
     glm::vec4 col1(0.0,1.0,0.0,0.0);
@@ -26,4 +26,26 @@ glm::mat4 GLRenderer::get_view_matrix() {
 
     //multiply Mrotate and Mtranslate
     return matRotate*matTranslate;
+}
+
+glm::mat4 GLRenderer::get_proj_matrix(){
+
+    float near = m_near_plane;
+    float far = m_far_plane;
+    float theta_w = m_camera_width;
+    float theta_h = m_camera_height;
+    float c = -near/far;
+    glm::mat4 z_remap(1.f,0.f,0.f,0.f,
+                      0.f,1.f,0.f,0.f,
+                      0.f,0.f,-2.f,0.f,
+                      0.f,0.f,-1.f,1.f);
+    glm::mat4 unhinge(1.f,0.f,0.f,0.f,
+                      0.f,1.f,0.f,0.f,
+                      0.f,0.f,1.f/(1.f+c),-1.f,
+                      0.f,0.f,-c/(1.f+c),0.f);
+    glm::mat4 scale(1.f/(far*tan(theta_w/2.f)),0.f,0.f,0.f,
+                    0.f,1.f/(far*tan(theta_h/2.f)),0.f,0.f,
+                    0.f,0.f,1.f/far,0.f,
+                    0.f,0.f,0.f,1.f);
+    return z_remap*unhinge*scale;
 }
