@@ -45,11 +45,14 @@ std::vector<glm::mat4> create_model_matrices(){
     for (float x = -max; x < max; ){
         for (float t = 0.0; t < 1.0; ){
             glm::vec3 curve = (1.f-t*t) * P0 + 2.f*(1.f-t)*t*P1 + t*t*P2;
-            glm::vec3 ray = curve-glm::vec3(0,0,10);
-            float theta = acos(glm::dot(ray,curve)/abs(glm::length(curve)*glm::length(ray)));
-            glm::mat4 ctm = glm::translate(glm::vec3(x,curve.y,curve.z))*glm::rotate(theta,glm::vec3(0,1,0));
-            matrices.push_back(ctm);
             t= t+0.1;
+            glm::vec3 next_curve = (1.f-t*t) * P0 + 2.f*(1.f-t)*t*P1 + t*t*P2;
+            glm::vec3 ray = glm::cross(next_curve-curve,glm::vec3(-1,0,0));
+            glm::vec3 up(0,1,0);
+            float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up)));
+            glm::mat4 ctm = glm::translate(glm::vec3(x,curve.y,curve.z))*glm::rotate(theta,glm::vec3(1,0,0));
+            matrices.push_back(ctm);
+
         }
         x = x + interval;
     }
