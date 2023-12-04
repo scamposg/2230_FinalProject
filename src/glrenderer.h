@@ -17,6 +17,7 @@ class GLRenderer : public QOpenGLWidget
 public:
     GLRenderer(QWidget *parent = nullptr);
     void play_scene();
+    void reset_scene();
     ~GLRenderer();
 
 public slots:
@@ -48,6 +49,10 @@ private:
     glm::vec3 building_specular = glm::vec3(1.0,0.98,0.875);
 
     std::vector<glm::mat4> m_matrices;
+    glm::vec3 m_curve_OG_0 = glm::vec3(0,0,20);
+    glm::vec3 m_curve_OG_1 = glm::vec3(0,0,-30);
+    glm::vec3 m_curve_OG_2 = glm::vec3(0,0,-40);
+
     glm::vec3 m_curve_0 = glm::vec3(0,0,20);
     glm::vec3 m_curve_1 = glm::vec3(0,0,-30);
     glm::vec3 m_curve_2 = glm::vec3(0,0,-40);

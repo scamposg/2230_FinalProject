@@ -259,7 +259,16 @@ void GLRenderer::initializeGL()
 void GLRenderer::play_scene(){
     if (m_to_play) m_to_play = false;
     else m_to_play = true;
+}
 
+void GLRenderer::reset_scene(){
+    m_to_play = false;
+    m_matrices = create_model_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2);
+    m_curve_0 = m_curve_OG_0;
+    m_curve_1 = m_curve_OG_1;
+    m_curve_2 = m_curve_OG_2;
+
+    update();
 }
 
 void GLRenderer::paintGL()
