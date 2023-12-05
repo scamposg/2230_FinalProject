@@ -63,6 +63,11 @@ void insertVec3(std::vector<float> &data, glm::vec3 v) {
     data.push_back(v.z);
 }
 
+void insertVec2(std::vector<float> &data, glm::vec2 v) {
+    data.push_back(v.x);
+    data.push_back(v.y);
+}
+
 void makeTile(glm::vec3 topLeft,
                     glm::vec3 topRight,
                     glm::vec3 bottomLeft,
@@ -74,24 +79,29 @@ void makeTile(glm::vec3 topLeft,
     glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
     glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
 
-    insertVec3(m_vertexData,topLeft);
-    insertVec3(m_vertexData,top_left_normal);
+    insertVec3(m_vertexData,topLeft); // Coordinates
+    insertVec3(m_vertexData,top_left_normal); // Normals
+    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f)); // UV Coordinates
 
     insertVec3(m_vertexData,bottomLeft);
     insertVec3(m_vertexData,bottom_left_normal);
+    insertVec2(m_vertexData, glm::vec2(-1.0f, 0.0f));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData, glm::vec2(-1.0f, -1.0f));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData, glm::vec2(-1.0f, -1.0f));
 
     insertVec3(m_vertexData,topRight);
     insertVec3(m_vertexData,top_right_normal);
+    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f));
 
     insertVec3(m_vertexData,topLeft);
     insertVec3(m_vertexData,top_left_normal);
-
+    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f));
 }
 
 void makeFace(glm::vec3 topLeft,
@@ -223,7 +233,8 @@ void GLRenderer::initializeGL()
 
     // UV Mapping
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    loadTextures();
 
     // Clean-up bindings
     glBindVertexArray(0);
@@ -326,4 +337,38 @@ void GLRenderer::rebuildMatrices() {
     m_proj = glm::perspective(glm::radians(45.0),1.0 * width() / height(),0.01,100.0);
 
     update();
+}
+
+void loadTextures() {
+    QString tex1_filepath = QString(":/resources/textures/facade_diffuse1.png");
+
+    // Task 1: Obtain image from filepath
+    m_tex1 = QImage(tex1_filepath);
+
+    // Task 2: Format image to fit OpenGL
+    m_image = m_image.convertToFormat(QImage::Format_RGBA8888).mirrored();
+
+    // Task 3: Generate kitten texture
+    glGenTextures(1, &m_kitten_texture);
+
+    // Task 9: Set the active texture slot to texture slot 0
+    glActiveTexture(GL_TEXTURE0);
+
+    // Task 4: Bind kitten texture
+    glBindTexture(GL_TEXTURE_2D, m_kitten_texture);
+
+    // Task 5: Load image into kitten texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_image.width(), m_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_image.bits());
+
+    // Task 6: Set min and mag filters' interpolation mode to linear
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Task 7: Unbind kitten texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Task 10: Set the texture.frag uniform for our texture
+    glUseProgram(m_texture_shader);
+    glUniform1i(glGetUniformLocation(m_texture_shader, "sampler"), GL_TEXTURE0);
+    glUseProgram(0);
 }

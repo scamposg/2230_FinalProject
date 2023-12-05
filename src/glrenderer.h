@@ -49,10 +49,15 @@ private:
     float m_kd;
     float m_ks;
     float m_kt; // UV mapping for texture component
+
     float m_shininess;
 
     QPoint m_prevMousePos;
     float  m_angleX;
     float  m_angleY;
     float  m_zoom;
+
+    // UV Mapping stuff
+    void loadTextures();
+    QImage m_tex1;
 };
