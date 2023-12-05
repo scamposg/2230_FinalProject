@@ -58,8 +58,14 @@ void main() {
     vec3 textureColor = texture(objectTexture, UV).rgb * k_t;
 
     //float sum = ambient + diffuse + specular + textureColor.x;
-    float sum = textureColor.x;
+    float sumr = textureColor.x;
+    float sumg = textureColor.y;
+    float sumb = textureColor.z;
 
-    fragColor = vec4(sum, sum, sum, 1.f);
+//    float sumr = UV.x;
+//    float sumg = UV.y;
+//    float sumb = 0.0f;
+
+    fragColor = vec4(sumr, sumg, sumb, 1.f);
 
 }

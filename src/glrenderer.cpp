@@ -81,27 +81,27 @@ void makeTile(glm::vec3 topLeft,
 
     insertVec3(m_vertexData,topLeft); // Coordinates
     insertVec3(m_vertexData,top_left_normal); // Normals
-    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f)); // UV Coordinates
+    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f)); // UV Coordinates
 
     insertVec3(m_vertexData,bottomLeft);
     insertVec3(m_vertexData,bottom_left_normal);
-    insertVec2(m_vertexData, glm::vec2(-1.0f, 0.0f));
+    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData, glm::vec2(-1.0f, -1.0f));
+    insertVec2(m_vertexData, glm::vec2(1.0f, 0.0f));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData, glm::vec2(-1.0f, -1.0f));
+    insertVec2(m_vertexData, glm::vec2(1.0f, 0.0f));
 
     insertVec3(m_vertexData,topRight);
     insertVec3(m_vertexData,top_right_normal);
-    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f));
+    insertVec2(m_vertexData, glm::vec2(1.0f, 1.0f));
 
     insertVec3(m_vertexData,topLeft);
     insertVec3(m_vertexData,top_left_normal);
-    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f));
+    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f));
 }
 
 void makeFace(glm::vec3 topLeft,
@@ -344,29 +344,21 @@ void GLRenderer::loadTextures() {
 
     // Task 1: Obtain image from filepath
     m_tex1 = QImage(tex1_filepath);
-
     // Task 2: Format image to fit OpenGL
     m_tex1 = m_tex1.convertToFormat(QImage::Format_RGBA8888).mirrored();
-
     // Task 3: Generate kitten texture
     glGenTextures(1, &m_tex1_texture);
-
     // Task 9: Set the active texture slot to texture slot 0
     glActiveTexture(GL_TEXTURE0);
-
     // Task 4: Bind kitten texture
     glBindTexture(GL_TEXTURE_2D, m_tex1_texture);
-
     // Task 5: Load image into kitten texture
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_tex1.width(), m_tex1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_tex1.bits());
-
     // Task 6: Set min and mag filters' interpolation mode to linear
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     // Task 7: Unbind kitten texture
     glBindTexture(GL_TEXTURE_2D, 0);
-
     // Task 10: Set the texture.frag uniform for our texture
     glUseProgram(m_shader);
     glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), GL_TEXTURE0);
