@@ -224,6 +224,8 @@ void GLRenderer::initializeGL()
     glGenVertexArrays(1, &m_cube_vao);
     glBindVertexArray(m_cube_vao);
 
+    loadTextures();
+
     // Enable and define attribute 0 to store vertex positions
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
@@ -234,7 +236,6 @@ void GLRenderer::initializeGL()
     // UV Mapping
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
-    loadTextures();
 
     // Clean-up bindings
     glBindVertexArray(0);
@@ -346,18 +347,18 @@ void GLRenderer::loadTextures() {
     m_tex1 = QImage(tex1_filepath);
     // Task 2: Format image to fit OpenGL
     m_tex1 = m_tex1.convertToFormat(QImage::Format_RGBA8888).mirrored();
-    // Task 3: Generate kitten texture
+    // Task 3: Generate texture
     glGenTextures(1, &m_tex1_texture);
     // Task 9: Set the active texture slot to texture slot 0
     glActiveTexture(GL_TEXTURE0);
-    // Task 4: Bind kitten texture
+    // Task 4: Bind texture
     glBindTexture(GL_TEXTURE_2D, m_tex1_texture);
-    // Task 5: Load image into kitten texture
+    // Task 5: Load image into texture
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_tex1.width(), m_tex1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_tex1.bits());
     // Task 6: Set min and mag filters' interpolation mode to linear
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // Task 7: Unbind kitten texture
+    // Task 7: Unbind texture
     glBindTexture(GL_TEXTURE_2D, 0);
     // Task 10: Set the texture.frag uniform for our texture
     glUseProgram(m_shader);

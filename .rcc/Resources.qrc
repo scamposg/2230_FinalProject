@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="resources/shaders/default.vert">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/shaders/default.vert</file>
+    <file alias="resources/shaders/default.frag">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/shaders/default.frag</file>
+  </qresource>
+</RCC>
+

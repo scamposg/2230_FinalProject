@@ -1,0 +1,231 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libStaticGLEW.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_compile_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 61,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 47,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-Wno-volatile -O3 -DNDEBUG"
+				},
+				{
+					"fragment" : "-std=gnu++20"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "GLEW_STATIC"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject"
+				},
+				{
+					"backtrace" : 0,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/StaticGLEW_autogen/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/src"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/FinalProject"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/PRIVATE"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/glew/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-O3 -DNDEBUG"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "GLEW_STATIC"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject"
+				},
+				{
+					"backtrace" : 0,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/StaticGLEW_autogen/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/src"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/FinalProject"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/PRIVATE"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "C:/Users/simon/Documents/Brown/2230/2230_FinalProject/glew/include"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "StaticGLEW_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "StaticGLEW_autogen::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "StaticGLEW::@6890427a1f51a3e7e1df",
+	"name" : "StaticGLEW",
+	"nameOnDisk" : "libStaticGLEW.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				2
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				3
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "StaticGLEW_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "glew/src/glew.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "StaticGLEW_autogen/timestamp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "StaticGLEW_autogen/timestamp.rule",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}
