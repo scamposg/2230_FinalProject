@@ -57,7 +57,8 @@ void main() {
     // UV Mapping
     vec3 textureColor = texture(objectTexture, UV).rgb * k_t;
 
-    float sum = ambient + diffuse + specular + textureColor;
+    //float sum = ambient + diffuse + specular + textureColor.x;
+    float sum = textureColor.x;
 
     fragColor = vec4(sum, sum, sum, 1.f);
 

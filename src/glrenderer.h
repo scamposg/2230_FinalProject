@@ -60,4 +60,5 @@ private:
     // UV Mapping stuff
     void loadTextures();
     QImage m_tex1;
+    GLuint m_tex1_texture;
 };
