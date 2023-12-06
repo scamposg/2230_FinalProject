@@ -19,12 +19,16 @@ MainWindow::MainWindow()
     hLayout->addWidget(aspectRatioWidget, 1);
     this->setLayout(hLayout);
 
+    generate_city = new QPushButton();
+    generate_city->setText(QStringLiteral("Generate City"));
+
     play_scene = new QPushButton();
     play_scene->setText(QStringLiteral("Play/Pause Scene"));
 
     reset_scene = new QPushButton();
     reset_scene->setText(QStringLiteral("Reset Scene"));
 
+    vLayout->addWidget(generate_city);
     vLayout->addWidget(play_scene);
     vLayout->addWidget(reset_scene);
 
@@ -34,6 +38,12 @@ MainWindow::MainWindow()
 void MainWindow::connect_UI_elements(){
     connect_play_button();
     connect_reset_button();
+    connect_generate_button();
+}
+
+
+void MainWindow::connect_generate_button(){
+    connect(generate_city, &QPushButton::clicked, this, &MainWindow::on_generate_city);
 }
 
 void MainWindow::connect_play_button(){
@@ -42,6 +52,10 @@ void MainWindow::connect_play_button(){
 
 void MainWindow::connect_reset_button(){
     connect(reset_scene, &QPushButton::clicked, this, &MainWindow::on_reset_scene);
+}
+
+void MainWindow::on_generate_city(){
+    glRenderer->generate_city();
 }
 
 void MainWindow::on_play_scene(){

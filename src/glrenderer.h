@@ -9,6 +9,10 @@
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/constants.hpp"
+
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
@@ -18,6 +22,7 @@ public:
     GLRenderer(QWidget *parent = nullptr);
     void play_scene();
     void reset_scene();
+    void generate_city();
     ~GLRenderer();
 
 public slots:
@@ -71,6 +76,7 @@ private:
 
     glm::mat4 get_view_matrix();
     glm::mat4 get_proj_matrix();
+
 
     glm::vec4 m_light_direction; // The world-space position of the point light
 

@@ -33,6 +33,8 @@ add_executable(${PROJECT_NAME}
     src/shaderloader.h
     src/aspectratiowidget/aspectratiowidget.hpp
     src/camera.cpp
+    src/bezier.cpp
+    src/l-system.cpp
 )
 # Specifies other files
 qt_add_resources(${PROJECT_NAME} "Resources"

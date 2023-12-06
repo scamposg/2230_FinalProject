@@ -6,9 +6,7 @@
 #include <QMouseEvent>
 #include <unistd.h>
 //#include <Windows.h>
-#include "glm/gtc/constants.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
+
 
 GLRenderer::GLRenderer(QWidget *parent)
     : QOpenGLWidget(parent),
