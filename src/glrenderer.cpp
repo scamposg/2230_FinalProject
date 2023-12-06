@@ -68,6 +68,22 @@ void insertVec2(std::vector<float> &data, glm::vec2 v) {
     data.push_back(v.y);
 }
 
+glm::vec3 tangentVector(std::vector<glm::vec3> &vertices, glm::vec3 &normal, std::vector<glm::vec2> &uv) {
+    glm::vec3 edge1 = vertices[1] - vertices[0];
+    glm::vec3 edge2 = vertices[2] - vertices[0];
+    float deltaU1 = uv[1].x - uv[0].x;
+    float deltaV1 = uv[1].y - uv[0].y;
+    float deltaU2 = uv[2].x - uv[0].x;
+    float deltaV2 = uv[2].y - uv[0].y;
+    float f = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
+    glm::vec3 tangent;
+    tangent.x = f * (deltaV2 * edge1.x - deltaV1 * edge2.x);
+    tangent.y = f * (deltaV2 * edge1.y - deltaV1 * edge2.y);
+    tangent.z = f * (deltaV2 * edge1.z - deltaV1 * edge2.z);
+    tangent = glm::normalize(tangent);
+    return tangent;
+}
+
 void makeTile(glm::vec3 topLeft,
                     glm::vec3 topRight,
                     glm::vec3 bottomLeft,
@@ -79,29 +95,45 @@ void makeTile(glm::vec3 topLeft,
     glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
     glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
 
+    glm::vec2 top_left_uv = glm::vec2(0.0f, 1.0f);
+    glm::vec2 bottom_left_uv = glm::vec2(0.0f, 0.0f);
+    glm::vec2 bottom_right_uv = glm::vec2(1.0f, 0.0f);
+    glm::vec2 top_right_uv = glm::vec2(1.0f, 1.0f);
+
+    std::vector<glm::vec3> vertices1 = {topLeft, bottomLeft, bottomRight};
+    std::vector<glm::vec3> vertices2 = {bottomRight, topRight, topLeft};
+    std::vector<glm::vec2> uv1 = {top_left_uv, bottom_left_uv, bottom_right_uv};
+    std::vector<glm::vec2> uv2 = {bottom_right_uv, top_right_uv, top_left_uv};
+
     insertVec3(m_vertexData,topLeft); // Coordinates
     insertVec3(m_vertexData,top_left_normal); // Normals
-    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f)); // UV Coordinates
+    insertVec2(m_vertexData, top_left_uv); // UV Coordinates
+    insertVec3(m_vertexData, tangentVector(vertices1, top_left_normal, uv1)); // Tangent vector for normal mapping
 
     insertVec3(m_vertexData,bottomLeft);
     insertVec3(m_vertexData,bottom_left_normal);
-    insertVec2(m_vertexData, glm::vec2(0.0f, 0.0f));
+    insertVec2(m_vertexData, bottom_left_uv);
+    insertVec3(m_vertexData, tangentVector(vertices1, bottom_left_normal, uv1));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData, glm::vec2(1.0f, 0.0f));
+    insertVec2(m_vertexData, bottom_right_uv);
+    insertVec3(m_vertexData, tangentVector(vertices1, bottom_right_normal, uv1));
 
     insertVec3(m_vertexData,bottomRight);
     insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData, glm::vec2(1.0f, 0.0f));
+    insertVec2(m_vertexData, bottom_right_uv);
+    insertVec3(m_vertexData, tangentVector(vertices2, bottom_right_normal, uv2));
 
     insertVec3(m_vertexData,topRight);
     insertVec3(m_vertexData,top_right_normal);
-    insertVec2(m_vertexData, glm::vec2(1.0f, 1.0f));
+    insertVec2(m_vertexData, top_right_uv);
+    insertVec3(m_vertexData, tangentVector(vertices2, top_right_normal, uv2));
 
     insertVec3(m_vertexData,topLeft);
     insertVec3(m_vertexData,top_left_normal);
-    insertVec2(m_vertexData, glm::vec2(0.0f, 1.0f));
+    insertVec2(m_vertexData, top_left_uv);
+    insertVec3(m_vertexData, tangentVector(vertices2, top_left_normal, uv2));
 }
 
 void makeFace(glm::vec3 topLeft,
@@ -228,14 +260,18 @@ void GLRenderer::initializeGL()
 
     // Enable and define attribute 0 to store vertex positions
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(0));
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
 
     // UV Mapping
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+
+    // Tangent verctor for normal mapping
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(8 * sizeof(GLfloat)));
 
     // Clean-up bindings
     glBindVertexArray(0);
@@ -342,7 +378,6 @@ void GLRenderer::rebuildMatrices() {
 
 void GLRenderer::loadTextures() {
     QString tex1_filepath = QString(":/resources/textures/facade_diffuse1.png");
-
     // Task 1: Obtain image from filepath
     m_tex1 = QImage(tex1_filepath);
     // Task 2: Format image to fit OpenGL

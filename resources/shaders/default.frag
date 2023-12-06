@@ -22,6 +22,7 @@ uniform float shininess;
 
 // UV Mapping
 in vec2 UV;
+in vec3 world_space_tangent;
 uniform float k_t;
 uniform sampler2D objectTexture;
 
@@ -58,13 +59,13 @@ void main() {
     vec3 textureColor = texture(objectTexture, UV).rgb * k_t;
 
     //float sum = ambient + diffuse + specular + textureColor.x;
-    float sumr = textureColor.x;
-    float sumg = textureColor.y;
-    float sumb = textureColor.z;
+//    float sumr = textureColor.x;
+//    float sumg = textureColor.y;
+//    float sumb = textureColor.z;
 
-//    float sumr = UV.x;
-//    float sumg = UV.y;
-//    float sumb = 0.0f;
+    float sumr = UV.x;
+    float sumg = UV.y;
+    float sumb = 0.0f;
 
     fragColor = vec4(sumr, sumg, sumb, 1.f);
 

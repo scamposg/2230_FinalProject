@@ -5,13 +5,14 @@
 layout(location = 0) in vec3 object_space_position;
 layout(location = 1) in vec3 object_space_normal;
 layout(location = 2) in vec2 vertex_UV; // UV Mapping
+layout(location = 3) in vec3 tangent_vector; // Tangent vector for normal mapping
 
 // Task 5: declare `out` variables for the world-space position and normal,
 //         to be passed to the fragment shader
 out vec3 world_space_position;
 out vec3 world_space_normal;
-// UV Mapping
-out vec2 UV;
+out vec2 UV; // UV mapping
+out vec3 world_space_tangent; // Tangent vector for normal mapping
 
 // Task 6: declare a uniform mat4 to store model matrix
 uniform mat4 model_matrix;
@@ -27,6 +28,7 @@ void main() {
 
     world_space_position =  vec3(model_matrix * vec4(object_space_position,1.0));
     world_space_normal = inverse_transpose_matrix * object_space_normal;
+    world_space_tangent = inverse_transpose_matrix * tangent_vector; // Does this also need to be multiplied by inverse transpose?
 
     // Recall that transforming normals requires obtaining the inverse-transpose of the model matrix!
     // In projects 5 and 6, consider the performance implications of performing this here.
