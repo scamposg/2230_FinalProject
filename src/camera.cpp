@@ -1,5 +1,21 @@
 #include "glrenderer.h"
 
+glm::mat3 get_rotation_mat(float theta, glm::vec3 u){
+    glm::vec3 col0(std::cos(theta) + (std::pow(u.x,2.f)*(1-std::cos(theta))),
+                   u.x*u.y*(1-std::cos(theta) + u.z*std::sin(theta)),
+                   u.x*u.z*(1-std::cos(theta)) - u.y*std::sin(theta));
+
+    glm::vec3 col1(u.x*u.y*(1-std::cos(theta)) - u.z*std::sin(theta),
+                   std::cos(theta) + (std::pow(u.y,2.f)*(1-std::cos(theta))),
+                   u.y*u.z*(1-std::cos(theta)) + u.x*std::sin(theta));
+
+    glm::vec3 col2(u.x*u.z*(1-std::cos(theta)) + u.y*std::sin(theta),
+                   u.y*u.z*(1-std::cos(theta)) - u.x*std::sin(theta),
+                   std::cos(theta) + (std::pow(u.z,2.f)*(1-std::cos(theta))));
+
+    return glm::mat3(col0,col1,col2);
+}
+
 glm::mat4 GLRenderer::get_view_matrix() {
 
     //create Mtranslate from inverse m_camera_position
@@ -48,4 +64,15 @@ glm::mat4 GLRenderer::get_proj_matrix(){
                     0.f,0.f,1.f/far,0.f,
                     0.f,0.f,0.f,1.f);
     return z_remap*unhinge*scale;
+}
+
+
+
+void GLRenderer::rotate_camera(float theta, glm::vec3 axis){
+    glm::mat3 transform = get_rotation_mat(theta,axis);
+    glm::vec3 old_look_vector = m_camera_look;
+    glm::vec3 new_look_vector = transform*old_look_vector;
+    m_camera_look = glm::vec4(new_look_vector,0.f);
+
+
 }

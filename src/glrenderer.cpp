@@ -33,174 +33,6 @@ GLRenderer::~GLRenderer()
 
 
 
-std::vector<glm::mat4> create_model_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2){
-    std::vector<glm::mat4> matrices;
-
-
-    matrices.clear();
-    float interval = 4.f;
-    float max = 10.f;
-    for (float x = -max; x <= max; ){
-        for (float t = 0.0; t < 1.0; ){
-            glm::vec3 curve = (1.f-t*t) * P0 + 2.f*(1.f-t)*t*P1 + t*t*P2;
-            t= t+0.1;
-            glm::vec3 next_curve = (1.f-t*t) * P0 + 2.f*(1.f-t)*t*P1 + t*t*P2;
-            glm::vec3 ray = glm::cross(next_curve-curve,glm::vec3(-1,0,0));
-            glm::vec3 up(0,1,0);
-            float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up)));
-            glm::mat4 ctm = glm::translate(glm::vec3(x,curve.y,curve.z))*glm::rotate(theta,glm::vec3(1,0,0))*glm::scale(glm::vec3(1,1,4));
-            matrices.push_back(ctm);
-
-        }
-        x = x + interval;
-    }
-
-    return matrices;
-}
-
-void insertVec2(std::vector<float> &data, glm::vec2 v) {
-    data.push_back(v.x);
-    data.push_back(v.y);
-}
-
-void insertVec3(std::vector<float> &data, glm::vec3 v) {
-    data.push_back(v.x);
-    data.push_back(v.y);
-    data.push_back(v.z);
-}
-
-void makeTile(glm::vec3 topLeft,
-                    glm::vec3 topRight,
-                    glm::vec3 bottomLeft,
-                    glm::vec3 bottomRight, std::vector<float> &m_vertexData) {
-
-
-    glm::vec3 top_left_normal = glm::normalize(glm::cross(topLeft-bottomLeft,topLeft-bottomRight));
-    glm::vec3 bottom_left_normal = glm::normalize(glm::cross(bottomLeft-bottomRight,bottomLeft-topLeft));
-    glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
-    glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
-
-    glm::vec2 top_left_uv = glm::vec2(0,1);
-    glm::vec2 bottom_left_uv = glm::vec2(0,0);
-    glm::vec2 top_right_uv = glm::vec2(1,1);
-    glm::vec2 bottom_right_uv = glm::vec2(1,0);
-
-
-    insertVec3(m_vertexData,topLeft);
-    insertVec3(m_vertexData,top_left_normal);
-    insertVec2(m_vertexData,top_left_uv);
-
-    insertVec3(m_vertexData,bottomLeft);
-    insertVec3(m_vertexData,bottom_left_normal);
-    insertVec2(m_vertexData,bottom_left_uv);
-
-    insertVec3(m_vertexData,bottomRight);
-    insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData,bottom_right_uv);
-
-    insertVec3(m_vertexData,bottomRight);
-    insertVec3(m_vertexData,bottom_right_normal);
-    insertVec2(m_vertexData,bottom_right_uv);
-
-    insertVec3(m_vertexData,topRight);
-    insertVec3(m_vertexData,top_right_normal);
-    insertVec2(m_vertexData,top_right_uv);
-
-    insertVec3(m_vertexData,topLeft);
-    insertVec3(m_vertexData,top_left_normal);
-    insertVec2(m_vertexData,top_left_uv);
-
-}
-
-void makeFace(glm::vec3 topLeft,
-                    glm::vec3 topRight,
-                    glm::vec3 bottomLeft,
-                    glm::vec3 bottomRight, std::vector<float> &m_vertexData) {
-    // Task 3: create a single side of the cube out of the 4
-    //         given points and makeTile()
-    // Note: think about how param 1 affects the number of triangles on
-    //       the face of the cube
-
-    //default set everything to top and bottom  lefts
-    int m_param1 = 1;
-
-    for (float row_ctr=0.f; row_ctr<float(m_param1); row_ctr++){
-        glm::vec3 tile_top_left = bottomLeft;
-        glm::vec3 tile_top_right = bottomLeft;
-        glm::vec3 tile_bottom_left = bottomLeft;
-        glm::vec3 tile_bottom_right = bottomLeft;
-
-
-        tile_top_left += ((row_ctr+1.f)/m_param1)*(topLeft-bottomLeft);
-        tile_top_right += ((row_ctr+1.f)/m_param1)*(topLeft-bottomLeft);
-        tile_bottom_left += ((row_ctr)/m_param1)*(topLeft-bottomLeft);
-        tile_bottom_right += ((row_ctr)/m_param1)*(topLeft-bottomLeft);
-
-        for (float col_ctr=0.f; col_ctr<float(m_param1); col_ctr++){
-
-            //iterate through column values
-
-
-            tile_top_right += (topRight-topLeft)/float(m_param1);
-            tile_bottom_right += (topRight-topLeft)/float(m_param1);
-
-            makeTile(tile_top_left,tile_top_right,tile_bottom_left,tile_bottom_right,m_vertexData);
-            tile_top_left += (topRight-topLeft)/float(m_param1);
-            tile_bottom_left += (topRight-topLeft)/float(m_param1);
-        }
-    }
-}
-
-std::vector<float> generateCubeData()
-{
-    std::vector<float> data;
-
-    data.clear();
-    //Face on Z = 0.5
-    makeFace(glm::vec3(-0.5f,  0.5f, 0.5f),
-             glm::vec3( 0.5f,  0.5f, 0.5f),
-             glm::vec3(-0.5f, -0.5f, 0.5f),
-             glm::vec3( 0.5f, -0.5f, 0.5f),
-             data);
-
-    //Face on Y == 0.5
-    makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
-             glm::vec3( 0.5f, 0.5f,-0.5f),
-             glm::vec3(-0.5f, 0.5f, 0.5f),
-             glm::vec3(0.5f, 0.5f, -0.5f),
-             data);
-    //Face on X == 0.5
-    makeFace(glm::vec3( 0.5f, 0.5f, 0.5f),
-             glm::vec3( 0.5f, 0.5f,-0.5f),
-             glm::vec3( 0.5f,-0.5f, 0.5f),
-             glm::vec3( 0.5f, -0.5f,-0.5f),
-             data);
-
-    //Face on Z = -0.5
-    makeFace(glm::vec3( 0.5f,  0.5f, -0.5f),
-             glm::vec3(-0.5f,  0.5f, -0.5f),
-             glm::vec3( 0.5f, -0.5f, -0.5f),
-             glm::vec3(-0.5f, -0.5f, -0.5f),
-             data);
-
-    //Face on Y == -0.5
-    makeFace(glm::vec3( 0.5f, -0.5f, 0.5f),
-             glm::vec3( 0.5f, -0.5f,-0.5f),
-             glm::vec3(-0.5f, -0.5f, 0.5f),
-             glm::vec3(-0.5f, -0.5f,-0.5f),
-             data);
-
-    //Face on X == -0.5
-    makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
-             glm::vec3(-0.5f, 0.5f, 0.5f),
-             glm::vec3(-0.5f,-0.5f,-0.5f),
-             glm::vec3(-0.5f,-0.5f, 0.5f),
-             data);
-
-
-    return data;
-}
-
 // ================== Students, You'll Be Working In These Files
 
 void GLRenderer::initializeGL()
@@ -215,7 +47,7 @@ void GLRenderer::initializeGL()
     fprintf(stdout, "Successfully initialized GLEW %s\n", glewGetString(GLEW_VERSION));
 
     // Set clear color to black
-    glClearColor(0.5,0.5,0.5,1);
+    glClearColor(0.75,0.9,0.95,1);
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
@@ -250,23 +82,33 @@ void GLRenderer::initializeGL()
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
-    m_matrices = create_model_matrices(m_curve_0,m_curve_1,m_curve_2);
+    // Generate and bind VBO
+    glGenBuffers(1, &m_road_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_road_vbo);
+    // Generate sphere data
+    m_roadData = generateRoadData();
+    // Send data to VBO
+    glBufferData(GL_ARRAY_BUFFER,m_roadData.size() * sizeof(GLfloat),m_roadData.data(), GL_STATIC_DRAW);
+    // Generate, and bind vao
+    glGenVertexArrays(1, &m_road_vao);
+    glBindVertexArray(m_road_vao);
+
+    // Enable and define attribute 0 to store vertex positions
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+
+    // UV Mapping
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+
+    // Clean-up bindings
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+
     m_view_original = get_view_matrix();
-}
-
-void GLRenderer::play_scene(){
-    if (m_to_play) m_to_play = false;
-    else m_to_play = true;
-}
-
-void GLRenderer::reset_scene(){
-    m_to_play = false;
-    m_matrices = create_model_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2);
-    m_curve_0 = m_curve_OG_0;
-    m_curve_1 = m_curve_OG_1;
-    m_curve_2 = m_curve_OG_2;
-
-    update();
 }
 
 void GLRenderer::paintGL()
@@ -274,9 +116,9 @@ void GLRenderer::paintGL()
     // Clear screen color and depth before painting
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (int i=0; i < m_matrices.size(); i++) {
+    for (int i=0; i < m_building_matrices.size(); i++) {
         // Bind Sphere Vertex Data
-        glBindVertexArray(m_cube_vao);
+        glBindVertexArray(m_road_vao);
 
         // Activate the shader program by calling glUseProgram with `m_shader`
         glUseProgram(m_shader);
@@ -287,9 +129,9 @@ void GLRenderer::paintGL()
         glUniform3fv(glGetUniformLocation(m_shader,"object_specular"),1,&building_specular[0]);
 
         // pass in m_model as a uniform into the shader program
-        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_matrices[i][0][0]);
-        glm::mat4 model_matrix_glm = glm::mat4(m_matrices[i]);
-        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_matrices[i]));
+        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_building_matrices[i][0][0]);
+        glm::mat4 model_matrix_glm = glm::mat4(m_building_matrices[i]);
+        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_building_matrices[i]));
         glUniformMatrix3fv(glGetUniformLocation(m_shader,"inverse_transpose_matrix"),1,GL_FALSE,&inverse_transpose[0][0]);
 
         // pass in m_view and m_proj
@@ -314,7 +156,7 @@ void GLRenderer::paintGL()
         glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
 
         // Draw Command
-        glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);
+        glDrawArrays(GL_TRIANGLES, 0, m_roadData.size() / 3);
         // Unbind Vertex Array
         glBindVertexArray(0);
 
@@ -337,49 +179,48 @@ void GLRenderer::mousePressEvent(QMouseEvent *event) {
 
 void GLRenderer::mouseMoveEvent(QMouseEvent *event) {
     // Update angle member variables based on event parameters
-    m_angleX += 10 * (event->position().x() - m_prevMousePos.x()) / (float) width();
-    m_angleY += 10 * (event->position().y() - m_prevMousePos.y()) / (float) height();
+    m_angleX = (event->position().x() - m_prevMousePos.x())*M_PI / ((float) width()*4.f);
+    m_angleY = (event->position().y() - m_prevMousePos.y())*M_PI / ((float) height()*4.f);
     m_prevMousePos = event->pos();
+    rotate_camera(m_angleX,glm::vec3(0,1,0));
+    rotate_camera(m_angleY,glm::cross(m_camera_look,m_camera_up));
     rebuildMatrices();
 }
 
 void GLRenderer::wheelEvent(QWheelEvent *event) {
     // Update zoom based on event parameter
-    m_zoom -= event->angleDelta().y() / 100.f;
+    m_zoom = event->angleDelta().y() / 100.f;
+    m_camera_pos -= (m_zoom*m_camera_pos);
     rebuildMatrices();
 }
 
 void GLRenderer::timerEvent(QTimerEvent *event) {
     int elapsedms   = m_elapsedTimer.elapsed();
-    float deltaTime = elapsedms * 0.001f;
-    m_elapsedTimer.restart();
+    float deltaTime = elapsedms * 0.001f ;
 
     // Use deltaTime and m_keyMap here to move around
     if (m_to_play){
-        m_curve_1 = m_curve_1 + deltaTime*glm::vec3(0,0,0);
-        m_curve_2 = m_curve_2 + deltaTime*glm::vec3(0,5,5);
-        m_matrices = create_model_matrices(m_curve_0,m_curve_1,m_curve_2);
+//        m_curve_3 = m_radius*glm::vec3(0,sin(deltaTime*M_PI),-cos(deltaTime*M_PI));
+        m_curve_1 = m_curve_OG_1+glm::vec3(0,0,deltaTime);
+        m_curve_2 = m_curve_OG_2+glm::vec3(0,deltaTime,deltaTime);
+        float z = -(m_radius-2.f*deltaTime);
+//        float y = std::log(z+m_radius+1);
+        float y = 5.f*sqrtf(z+m_radius)-0.5;
+        m_curve_3 = glm::vec3(0,y,z);
+        apply_bezier_matrices(m_curve_0,m_curve_1,m_curve_2,m_curve_3);
+    }
+    else {
+        m_elapsedTimer.restart();
     }
 
     update(); // asks for a PaintGL() call to occur
-    m_elapsedTimer.restart();
 }
 
 void GLRenderer::rebuildMatrices() {
     // Update view matrix by rotating eye vector based on x and y angles
-    m_view = m_view_original;
+    m_view = get_view_matrix();
+    m_proj = get_proj_matrix();
 
-    glm::mat4 rot = glm::rotate(glm::radians(10 * m_angleX),glm::vec3(0,0,1));
-    glm::vec3 eye = m_camera_pos;
-    eye = glm::vec3(rot * glm::vec4(eye,1));
 
-    rot = glm::rotate(glm::radians(10 * m_angleY),glm::cross(m_camera_look,m_camera_up));
-    eye = glm::vec3(rot * glm::vec4(eye,1));
-
-    eye = eye * m_zoom;
-
-    m_view = glm::lookAt(eye,glm::vec3(0,0,0),m_camera_up);
-
-    m_proj = glm::perspective(glm::radians(45.0),1.0 * width() / height(),0.01,100.0);
     update();
 }

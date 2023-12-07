@@ -35,6 +35,7 @@ add_executable(${PROJECT_NAME}
     src/camera.cpp
     src/bezier.cpp
     src/l-system.cpp
+    src/road.cpp
 )
 # Specifies other files
 qt_add_resources(${PROJECT_NAME} "Resources"

@@ -49,33 +49,53 @@ private:
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;
+    std::vector<float> generateCubeData();
+
+    GLuint m_road_vbo; // Stores id of vbo
+    GLuint m_road_vao; // Stores id of vao
+    std::vector<float> m_roadData;
+    std::vector<float> generateRoadData();
+
     glm::vec3 building_ambient = glm::vec3(0.969,0.925,0.698);
     glm::vec3 building_diffuse = glm::vec3(1.0,0.965,0.784);
     glm::vec3 building_specular = glm::vec3(1.0,0.98,0.875);
+    float closest_z=0.f;
+    float furthest_z=0.f;
+    std::vector<float>z_buffer;
 
-    std::vector<glm::mat4> m_matrices;
-    glm::vec3 m_curve_OG_0 = glm::vec3(0,0,20);
-    glm::vec3 m_curve_OG_1 = glm::vec3(0,0,-30);
-    glm::vec3 m_curve_OG_2 = glm::vec3(0,0,-40);
+    std::vector<glm::mat4> m_building_matrices;
+    std::vector<glm::mat4> m_original_building_matrices;
+    float m_radius = 50.f;
+    glm::vec3 m_curve_OG_0 = glm::vec3(0,-0.5,0);
+    glm::vec3 m_curve_OG_1 = glm::vec3(0,-0.5,-m_radius/3.f);
+    glm::vec3 m_curve_OG_2 = glm::vec3(0,-0.5,-m_radius*2.f/3.f);
+    glm::vec3 m_curve_OG_3 = glm::vec3(0,-0.5,-m_radius);
 
-    glm::vec3 m_curve_0 = glm::vec3(0,0,20);
-    glm::vec3 m_curve_1 = glm::vec3(0,0,-30);
-    glm::vec3 m_curve_2 = glm::vec3(0,0,-40);
+
+    glm::vec3 m_curve_0 = glm::vec3(0,-0.5,0);
+    glm::vec3 m_curve_1 = glm::vec3(0,-0.5,-m_radius/3.f);
+    glm::vec3 m_curve_2 = glm::vec3(0,-0.5,-m_radius*2.f/3.f);
+    glm::vec3 m_curve_3 = glm::vec3(0,-0.5,-m_radius);
 
     glm::mat4 m_view_original;
     glm::mat4 m_view;
     glm::mat4 m_proj;
 
-    glm::vec3 m_camera_pos = glm::vec3(0,0,20);
+    glm::vec3 m_camera_pos = glm::vec3(0,5,10);
     glm::vec3 m_camera_look = glm::vec3(0,0,-1);
     glm::vec3 m_camera_up = glm::vec3(0,1,0);
     double m_near_plane = 0.1f;
-    double m_far_plane = 100.f;
+    double m_far_plane = 200.f;
     double m_camera_width = glm::radians(45.0);
     double m_camera_height = glm::radians(45.0);
 
+    void apply_bezier_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2, glm::vec3 P3);
+    void get_city_matrices();
+
     glm::mat4 get_view_matrix();
     glm::mat4 get_proj_matrix();
+    void rotate_camera(float theta, glm::vec3 axis);
+
 
 
     glm::vec4 m_light_direction; // The world-space position of the point light

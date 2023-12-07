@@ -6,7 +6,7 @@ enum direction {
 
 void create_l_system_string(std::vector<char> &previous, int recurse_count){
     if (recurse_count == 0) return;
-    char x_string[] = {'B','L','B','[','X','B',']','L','B'};
+    char x_string[] = {'B','B','L','B','[','X','B','B',']','L','B'};
 
     for (int i = 0; i<size(previous); i++){
         if (previous.at(i) == 'X'){
@@ -27,9 +27,15 @@ void create_l_system_string(std::vector<char> &previous, int recurse_count){
     std::vector<char> final_string;
     for (int i=0; i<size(previous); i++){
         if (previous.at(i) == 'B'){
+//            for (int j=0; j<std::size(x_string); j++){
+//                final_string.push_back(x_string[j]);
+//            }
             final_string.push_back('L');
             final_string.push_back('B');
             final_string.push_back('B');
+
+
+
         }
         else {
             final_string.push_back(previous[i]);
@@ -42,11 +48,18 @@ void create_l_system_string(std::vector<char> &previous, int recurse_count){
     return;
 }
 
+glm::mat4 scale_building(direction dir){
+    if (dir == front) return glm::scale(glm::vec3(1,1,1));
+    if (dir == right) return glm::scale(glm::vec3(1,1,1));
+    if (dir == back) return glm::scale(glm::vec3(1,1,1));
+    if (dir == left) return glm::scale(glm::vec3(1,1,1));
+}
+
 glm::mat4 go_in_direction(direction dir){
-    if (dir == front) return glm::translate(glm::vec3(0,0,2));
-    if (dir == right) return glm::translate(glm::vec3(2,0,0));
-    if (dir == back) return glm::translate(glm::vec3(0,0,-2));
-    if (dir == left) return glm::translate(glm::vec3(-2,0,0));
+    if (dir == front) return glm::translate(glm::vec3(0,0,1));
+    if (dir == right) return glm::translate(glm::vec3(1,0,0));
+    if (dir == back) return glm::translate(glm::vec3(0,0,-1));
+    if (dir == left) return glm::translate(glm::vec3(-1,0,0));
 }
 
 direction inv_dir(direction dir){
@@ -64,25 +77,35 @@ direction switch_dir(direction dir){
     if (dir == right) return front;
 }
 
-void get_city_matrices(std::vector<glm::mat4> &matrices, glm::mat4 building_scale){
+void GLRenderer::get_city_matrices(){
     std::vector<char> l_string;
     l_string.push_back('X');
-    create_l_system_string(l_string,10);
+    create_l_system_string(l_string,7);
     std::vector<glm::mat4> prior_ctms;
     glm::mat4 current_ctm(1);
     float theta = glm::radians(90.f);
     prior_ctms.push_back(current_ctm);
-    prior_ctms.push_back(current_ctm);
     direction dir = back;
 
-    for (int i=0; i<size(l_string); i++){
+    for (int i=0; i<std::size(l_string); i++){
         if (l_string[i] == 'B'){
             glm::mat4 new_ctm = prior_ctms.back()*go_in_direction(dir);
-            if (new_ctm.length() < 50){
+            glm::vec4 test(1.f);
+            test = new_ctm*test;
+            if (test.x < -25 || test.z < -m_radius ||
+                test.x > 25 || test.z > 0){
+                dir = switch_dir(dir);
+                continue;
+            }
             current_ctm = new_ctm;
             prior_ctms.back() = current_ctm;
-            matrices.push_back(current_ctm);
-            }
+
+            if (test.z < furthest_z) furthest_z = test.z;
+            if (test.z > closest_z) closest_z = test.z;
+
+            z_buffer.push_back(test.z);
+            m_building_matrices.push_back(current_ctm*scale_building(dir));
+
             continue;
         }
         if (l_string[i] == 'R'){
@@ -107,9 +130,10 @@ void get_city_matrices(std::vector<glm::mat4> &matrices, glm::mat4 building_scal
 
 void GLRenderer::generate_city(){
     std::vector<glm::mat4> matrices;
-    glm::mat4 scale = glm::scale_slow(glm::mat4(1),glm::vec3(1,1,4));
-    get_city_matrices(matrices,scale);
-
-    m_matrices = matrices;
+    glm::mat4 scale = glm::scale(glm::mat4(1),glm::vec3(1,1,4));
+    m_building_matrices.clear();
+    get_city_matrices();
+    m_original_building_matrices = m_building_matrices;
+//    apply_bezier_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2);
     update();
 }
