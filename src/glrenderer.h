@@ -61,4 +61,26 @@ private:
     void loadTextures();
     QImage m_tex1;
     GLuint m_tex1_texture;
+    QImage m_tex2;
+    GLuint m_tex2_texture;
+    QImage m_tex3;
+    GLuint m_tex3_texture;
+    QImage m_tex4;
+    GLuint m_tex4_texture;
+    QImage m_tex5;
+    GLuint m_tex5_texture;
+    QImage m_tex6;
+    GLuint m_tex6_texture;
+    QImage m_tex7;
+    GLuint m_tex7_texture;
+    QImage m_tex8;
+    GLuint m_tex8_texture;
+    QImage m_tex9;
+    GLuint m_tex9_texture;
+    QImage m_tex10;
+    GLuint m_tex10_texture;
+    QImage m_tex11;
+    GLuint m_tex11_texture;
+    GLuint *textureArray[11] = {&m_tex1_texture, &m_tex2_texture, &m_tex3_texture, &m_tex4_texture, &m_tex5_texture, &m_tex6_texture,
+                               &m_tex7_texture, &m_tex8_texture, &m_tex9_texture, &m_tex10_texture, &m_tex11_texture};
 };

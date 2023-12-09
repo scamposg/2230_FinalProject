@@ -303,7 +303,6 @@ void GLRenderer::paintGL()
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"view_matrix"),1,GL_FALSE,&m_view[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"projection_matrix"),1,GL_FALSE,&m_proj[0][0]);
 
-
         // Task 12: pass m_ka into the fragment shader as a uniform
         glUniform1f(glGetUniformLocation(m_shader,"k_a"),m_ka);
 
@@ -320,9 +319,15 @@ void GLRenderer::paintGL()
         // UV mapping
         glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
 
+        int random = rand() % 11;
+        glActiveTexture(0);
+        glBindTexture(GL_TEXTURE_2D, *textureArray[random]);
+        glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), 0);
+
         // Draw Command
         glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);
         // Unbind Vertex Array
+        glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
 
         // Task 3: deactivate the shader program by passing 0 into glUseProgram
@@ -377,26 +382,66 @@ void GLRenderer::rebuildMatrices() {
 }
 
 void GLRenderer::loadTextures() {
-    QString tex1_filepath = QString(":/resources/textures/facade_diffuse1.png");
-    // Task 1: Obtain image from filepath
-    m_tex1 = QImage(tex1_filepath);
-    // Task 2: Format image to fit OpenGL
-    m_tex1 = m_tex1.convertToFormat(QImage::Format_RGBA8888).mirrored();
-    // Task 3: Generate texture
-    glGenTextures(1, &m_tex1_texture);
-    // Task 9: Set the active texture slot to texture slot 0
-    glActiveTexture(GL_TEXTURE0);
-    // Task 4: Bind texture
-    glBindTexture(GL_TEXTURE_2D, m_tex1_texture);
-    // Task 5: Load image into texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_tex1.width(), m_tex1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_tex1.bits());
-    // Task 6: Set min and mag filters' interpolation mode to linear
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // Task 7: Unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
-    // Task 10: Set the texture.frag uniform for our texture
-    glUseProgram(m_shader);
-    glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), GL_TEXTURE0);
-    glUseProgram(0);
+    for (int i = 1; i <= 11; i++) {
+        QString tex_filepath = QString((":/resources/textures/facade_diffuse" + std::to_string(i) + ".png").c_str());
+        QImage *m_tex;
+        GLuint *m_tex_texture;
+        switch (i) {
+        case 1:
+            m_tex = &m_tex1;
+            m_tex_texture = &m_tex1_texture;
+            break;
+        case 2:
+            m_tex = &m_tex2;
+            m_tex_texture = &m_tex2_texture;
+            break;
+        case 3:
+            m_tex = &m_tex3;
+            m_tex_texture = &m_tex3_texture;
+            break;
+        case 4:
+            m_tex = &m_tex4;
+            m_tex_texture = &m_tex4_texture;
+            break;
+        case 5:
+            m_tex = &m_tex5;
+            m_tex_texture = &m_tex5_texture;
+            break;
+        case 6:
+            m_tex = &m_tex6;
+            m_tex_texture = &m_tex6_texture;
+            break;
+        case 7:
+            m_tex = &m_tex7;
+            m_tex_texture = &m_tex7_texture;
+            break;
+        case 8:
+            m_tex = &m_tex8;
+            m_tex_texture = &m_tex8_texture;
+            break;
+        case 9:
+            m_tex = &m_tex9;
+            m_tex_texture = &m_tex9_texture;
+            break;
+        case 10:
+            m_tex = &m_tex10;
+            m_tex_texture = &m_tex10_texture;
+            break;
+        case 11:
+            m_tex = &m_tex11;
+            m_tex_texture = &m_tex11_texture;
+            break;
+        }
+        *m_tex = QImage(tex_filepath);
+        *m_tex = m_tex->convertToFormat(QImage::Format_RGBA8888).mirrored();
+        glGenTextures(1, &*m_tex_texture);
+        glActiveTexture(0);
+        glBindTexture(GL_TEXTURE_2D, *m_tex_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_tex->width(), m_tex->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_tex->bits());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind
+        glUseProgram(m_shader);
+        glUseProgram(0);
+    }
 }

@@ -2,6 +2,28 @@
   <qresource prefix="/">
     <file alias="resources/shaders/default.vert">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/shaders/default.vert</file>
     <file alias="resources/shaders/default.frag">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/shaders/default.frag</file>
+    <file alias="resources/textures/facade_diffuse1.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse1.png</file>
+    <file alias="resources/textures/facade_diffuse2.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse2.png</file>
+    <file alias="resources/textures/facade_diffuse3.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse3.png</file>
+    <file alias="resources/textures/facade_diffuse4.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse4.png</file>
+    <file alias="resources/textures/facade_diffuse5.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse5.png</file>
+    <file alias="resources/textures/facade_diffuse6.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse6.png</file>
+    <file alias="resources/textures/facade_diffuse7.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse7.png</file>
+    <file alias="resources/textures/facade_diffuse8.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse8.png</file>
+    <file alias="resources/textures/facade_diffuse9.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse9.png</file>
+    <file alias="resources/textures/facade_diffuse10.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse10.png</file>
+    <file alias="resources/textures/facade_diffuse11.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_diffuse11.png</file>
+    <file alias="resources/textures/facade_normal1.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal1.png</file>
+    <file alias="resources/textures/facade_normal2.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal2.png</file>
+    <file alias="resources/textures/facade_normal3.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal3.png</file>
+    <file alias="resources/textures/facade_normal4.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal4.png</file>
+    <file alias="resources/textures/facade_normal5.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal5.png</file>
+    <file alias="resources/textures/facade_normal6.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal6.png</file>
+    <file alias="resources/textures/facade_normal7.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal7.png</file>
+    <file alias="resources/textures/facade_normal8.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal8.png</file>
+    <file alias="resources/textures/facade_normal9.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal9.png</file>
+    <file alias="resources/textures/facade_normal10.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal10.png</file>
+    <file alias="resources/textures/facade_normal11.png">C:/Users/simon/Documents/Brown/2230/2230_FinalProject/resources/textures/facade_normal11.png</file>
   </qresource>
 </RCC>
 

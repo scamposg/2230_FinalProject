@@ -28,7 +28,7 @@ void main() {
 
     world_space_position =  vec3(model_matrix * vec4(object_space_position,1.0));
     world_space_normal = inverse_transpose_matrix * object_space_normal;
-    world_space_tangent = inverse_transpose_matrix * tangent_vector; // Does this also need to be multiplied by inverse transpose?
+    world_space_tangent = inverse_transpose_matrix * tangent_vector;
 
     // Recall that transforming normals requires obtaining the inverse-transpose of the model matrix!
     // In projects 5 and 6, consider the performance implications of performing this here.
