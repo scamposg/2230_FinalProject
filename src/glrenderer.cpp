@@ -286,6 +286,7 @@ void GLRenderer::paintGL()
     // Clear screen color and depth before painting
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    srand(12345);
     for (int i=0; i < m_matrices.size(); i++) {
         // Bind Sphere Vertex Data
         glBindVertexArray(m_cube_vao);
