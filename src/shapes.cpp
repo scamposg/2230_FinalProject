@@ -11,6 +11,99 @@ void insertVec3(std::vector<float> &data, glm::vec3 v) {
     data.push_back(v.z);
 }
 
+void makeFacade(glm::vec3 topLeft,
+                glm::vec3 topRight, glm::vec3 topMiddle,
+              glm::vec3 bottomLeft,
+              glm::vec3 bottomRight, std::vector<float> &m_vertexData){
+    glm::vec3 top_left_normal = glm::normalize(glm::cross(topLeft-bottomLeft,topLeft-bottomRight));
+    glm::vec3 bottom_left_normal = glm::normalize(glm::cross(bottomLeft-bottomRight,bottomLeft-topLeft));
+    glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
+    glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
+    glm::vec3 top_middle_normal = glm::normalize(glm::cross(topMiddle-topLeft,topMiddle-topRight));
+
+    glm::vec2 top_left_uv = glm::vec2(0,0.8);
+    glm::vec2 bottom_left_uv = glm::vec2(0,0);
+    glm::vec2 top_right_uv = glm::vec2(1,0.8);
+    glm::vec2 bottom_right_uv = glm::vec2(1,0);
+    glm::vec2 top_middle_uv = glm::vec2(0.5,1);
+
+    insertVec3(m_vertexData,topMiddle);
+    insertVec3(m_vertexData,top_middle_normal);
+    insertVec2(m_vertexData,top_middle_uv);
+
+    insertVec3(m_vertexData,topLeft);
+    insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
+
+    insertVec3(m_vertexData,topRight);
+    insertVec3(m_vertexData,top_right_normal);
+    insertVec2(m_vertexData,top_right_uv);
+
+    insertVec3(m_vertexData,topLeft);
+    insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
+
+    insertVec3(m_vertexData,bottomLeft);
+    insertVec3(m_vertexData,bottom_left_normal);
+    insertVec2(m_vertexData,bottom_left_uv);
+
+    insertVec3(m_vertexData,bottomRight);
+    insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
+
+    insertVec3(m_vertexData,bottomRight);
+    insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
+
+    insertVec3(m_vertexData,topRight);
+    insertVec3(m_vertexData,top_right_normal);
+    insertVec2(m_vertexData,top_right_uv);
+
+    insertVec3(m_vertexData,topLeft);
+    insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
+}
+
+void makeRoof(glm::vec3 topLeft,
+              glm::vec3 topRight,
+              glm::vec3 bottomLeft,
+              glm::vec3 bottomRight, std::vector<float> &m_vertexData){
+    glm::vec3 top_left_normal = glm::normalize(glm::cross(topLeft-bottomLeft,topLeft-bottomRight));
+    glm::vec3 bottom_left_normal = glm::normalize(glm::cross(bottomLeft-bottomRight,bottomLeft-topLeft));
+    glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
+    glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
+
+    glm::vec2 top_left_uv = glm::vec2(0,1);
+    glm::vec2 bottom_left_uv = glm::vec2(0,0.8);
+    glm::vec2 top_right_uv = glm::vec2(1,1);
+    glm::vec2 bottom_right_uv = glm::vec2(1,0.8);
+
+
+    insertVec3(m_vertexData,topLeft);
+    insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
+
+    insertVec3(m_vertexData,bottomLeft);
+    insertVec3(m_vertexData,bottom_left_normal);
+    insertVec2(m_vertexData,bottom_left_uv);
+
+    insertVec3(m_vertexData,bottomRight);
+    insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
+
+    insertVec3(m_vertexData,bottomRight);
+    insertVec3(m_vertexData,bottom_right_normal);
+    insertVec2(m_vertexData,bottom_right_uv);
+
+    insertVec3(m_vertexData,topRight);
+    insertVec3(m_vertexData,top_right_normal);
+    insertVec2(m_vertexData,top_right_uv);
+
+    insertVec3(m_vertexData,topLeft);
+    insertVec3(m_vertexData,top_left_normal);
+    insertVec2(m_vertexData,top_left_uv);
+}
+
 void makeTile(glm::vec3 topLeft,
               glm::vec3 topRight,
               glm::vec3 bottomLeft,
@@ -22,9 +115,9 @@ void makeTile(glm::vec3 topLeft,
     glm::vec3 bottom_right_normal = glm::normalize(glm::cross(bottomRight-topRight,bottomRight-bottomLeft));
     glm::vec3 top_right_normal = glm::normalize(glm::cross(topRight-bottomLeft,topLeft-bottomLeft));
 
-    glm::vec2 top_left_uv = glm::vec2(0,1);
+    glm::vec2 top_left_uv = glm::vec2(0,0.8);
     glm::vec2 bottom_left_uv = glm::vec2(0,0);
-    glm::vec2 top_right_uv = glm::vec2(1,1);
+    glm::vec2 top_right_uv = glm::vec2(1,0.8);
     glm::vec2 bottom_right_uv = glm::vec2(1,0);
 
 
@@ -115,43 +208,53 @@ std::vector<float> GLRenderer::generateCubeData()
     std::vector<float> data;
 
     data.clear();
-    //Face on Z = 1.
-    makeFace(glm::vec3(-0.5f,  0.5f, 0.5f),
-             glm::vec3( 0.5f,  0.5f, 0.5f),
+    //Facade on Z = 0.5
+    makeFacade(glm::vec3(-0.5f,  0.4f, 0.5f),
+             glm::vec3( 0.5f,  0.4f, 0.5f),
+               glm::vec3(0.f, 0.5f, 0.5f),
              glm::vec3(-0.5f, -0.5f, 0.5f),
              glm::vec3( 0.5f, -0.5f, 0.5f),
              data);
 
-    //Face on Y == 1.
-    makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
-             glm::vec3( 0.5f, 0.5f,-0.5f),
-             glm::vec3(-0.5f, 0.5f, 0.5f),
-             glm::vec3(0.5f, 0.5f, 0.5f),
+    //Left Roof
+    makeRoof(glm::vec3( 0.f, 0.5f,-0.5f),
+             glm::vec3( 0.f, 0.5f, 0.5f),
+             glm::vec3(-0.5f, 0.4f, -0.5f),
+             glm::vec3(-0.5f, 0.4f, 0.5f),
              data);
-    //Face on X == 1.
-    makeFace(glm::vec3( 0.5f, 0.5f, 0.5f),
-             glm::vec3( 0.5f, 0.5f,-0.5f),
+
+    //Right Roof
+    makeRoof(glm::vec3( 0.f, 0.5f, 0.5f),
+             glm::vec3( 0.f, 0.5f,-0.5f),
+             glm::vec3(0.5f, 0.4f, 0.5f),
+             glm::vec3(0.5f, 0.4f,-0.5f),
+             data);
+
+    //Face on X == 0.5
+    makeFace(glm::vec3( 0.5f, 0.4f, 0.5f),
+             glm::vec3( 0.5f, 0.4f,-0.5f),
              glm::vec3( 0.5f,-0.5f, 0.5f),
              glm::vec3( 0.5f, -0.5f,-0.5f),
              data);
 
-    //Face on Z = 0.
-    makeFace(glm::vec3( 0.5f,  0.5f, -0.5f),
-             glm::vec3(-0.5f,  0.5f, -0.5f),
-             glm::vec3( 0.5f, -0.5f, -0.5f),
-             glm::vec3(-0.5f, -0.5f, -0.5f),
-             data);
+    //Facade on Z = 0.5
+    makeFacade(glm::vec3( 0.5f,  0.4f,-0.5f),
+               glm::vec3(-0.5f,  0.4f,-0.5f),
+               glm::vec3( 0.f, 0.5f,-0.5f),
+               glm::vec3( 0.5f, -0.5f,-0.5f),
+               glm::vec3(-0.5f, -0.5f,-0.5f),
+               data);
 
-    //Face on Y == 0.
-    makeFace(glm::vec3( 0.5f, -0.5f, 0.5f),
-             glm::vec3( 0.5f, -0.5f,-0.5f),
-             glm::vec3(-0.5f, -0.5f, 0.5f),
-             glm::vec3(-0.5f, -0.5f,-0.5f),
-             data);
+    //Face on Y == -0.5
+//    makeFace(glm::vec3( 0.5f, -0.5f, 0.5f),
+//             glm::vec3( 0.5f, -0.5f,-0.5f),
+//             glm::vec3(-0.5f, -0.5f, 0.5f),
+//             glm::vec3(-0.5f, -0.5f,-0.5f),
+//             data);
 
-    //Face on X == 0.
-    makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
-             glm::vec3(-0.5f, 0.5f, 0.5f),
+    //Face on X == -0.5
+    makeFace(glm::vec3(-0.5f, 0.4f,-0.5f),
+             glm::vec3(-0.5f, 0.4f, 0.5f),
              glm::vec3(-0.5f,-0.5f,-0.5f),
              glm::vec3(-0.5f,-0.5f, 0.5f),
              data);
