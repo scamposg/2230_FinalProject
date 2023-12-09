@@ -97,11 +97,11 @@ void makeFace(glm::vec3 topLeft,
 
 std::vector<float> GLRenderer::generateRoadData(){
     std::vector<float> data;
-    //Face on Y == -0.5, but facing up
-    makeFace(glm::vec3(-0.5f, -0.5f,-0.5f),
-             glm::vec3( 0.5f, -0.5f,-0.5f),
-             glm::vec3(-0.5f, -0.5f, 0.5f),
-             glm::vec3(0.5f, -0.5f, 0.5f),
+    //Face on Y == 0., but facing up
+    makeFace(glm::vec3(-0.5f, 0.f,-0.5f),
+             glm::vec3( 0.5f, 0.f,-0.5f),
+             glm::vec3(-0.5f, 0.f, 0.5f),
+             glm::vec3(0.5f, 0.f, 0.5f),
              data);
 
     return data;
@@ -115,41 +115,41 @@ std::vector<float> GLRenderer::generateCubeData()
     std::vector<float> data;
 
     data.clear();
-    //Face on Z = 0.5
+    //Face on Z = 1.
     makeFace(glm::vec3(-0.5f,  0.5f, 0.5f),
              glm::vec3( 0.5f,  0.5f, 0.5f),
              glm::vec3(-0.5f, -0.5f, 0.5f),
              glm::vec3( 0.5f, -0.5f, 0.5f),
              data);
 
-    //Face on Y == 0.5
+    //Face on Y == 1.
     makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
              glm::vec3( 0.5f, 0.5f,-0.5f),
              glm::vec3(-0.5f, 0.5f, 0.5f),
              glm::vec3(0.5f, 0.5f, 0.5f),
              data);
-    //Face on X == 0.5
+    //Face on X == 1.
     makeFace(glm::vec3( 0.5f, 0.5f, 0.5f),
              glm::vec3( 0.5f, 0.5f,-0.5f),
              glm::vec3( 0.5f,-0.5f, 0.5f),
              glm::vec3( 0.5f, -0.5f,-0.5f),
              data);
 
-    //Face on Z = -0.5
+    //Face on Z = 0.
     makeFace(glm::vec3( 0.5f,  0.5f, -0.5f),
              glm::vec3(-0.5f,  0.5f, -0.5f),
              glm::vec3( 0.5f, -0.5f, -0.5f),
              glm::vec3(-0.5f, -0.5f, -0.5f),
              data);
 
-    //Face on Y == -0.5
+    //Face on Y == 0.
     makeFace(glm::vec3( 0.5f, -0.5f, 0.5f),
              glm::vec3( 0.5f, -0.5f,-0.5f),
              glm::vec3(-0.5f, -0.5f, 0.5f),
              glm::vec3(-0.5f, -0.5f,-0.5f),
              data);
 
-    //Face on X == -0.5
+    //Face on X == 0.
     makeFace(glm::vec3(-0.5f, 0.5f,-0.5f),
              glm::vec3(-0.5f, 0.5f, 0.5f),
              glm::vec3(-0.5f,-0.5f,-0.5f),

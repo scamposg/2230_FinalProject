@@ -30,5 +30,7 @@ int main(int argc, char *argv[])
         w.showMaximized();
     }
 
-    return a.exec();
+    int return_val = a.exec();
+    w.finish();
+    return return_val;
 }

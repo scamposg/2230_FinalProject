@@ -76,3 +76,12 @@ void GLRenderer::rotate_camera(float theta, glm::vec3 axis){
 
 
 }
+
+void GLRenderer::rebuildMatrices() {
+    // Update view matrix by rotating eye vector based on x and y angles
+    m_view = get_view_matrix();
+    m_proj = get_proj_matrix();
+
+
+    update();
+}

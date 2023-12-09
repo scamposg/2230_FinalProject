@@ -34,14 +34,17 @@ add_executable(${PROJECT_NAME}
     src/aspectratiowidget/aspectratiowidget.hpp
     src/camera.cpp
     src/bezier.cpp
-    src/l-system.cpp
-    src/road.cpp
+    src/city.cpp
+    src/shapes.cpp
 )
 # Specifies other files
 qt_add_resources(${PROJECT_NAME} "Resources"
   PREFIX
   "/"
   FILES
+  resources/textures/facade_diffuse.png
+  resources/textures/facade_normal.png
+  resources/textures/road_diffuse.jpeg
   resources/shaders/default.vert
   resources/shaders/default.frag
 )
