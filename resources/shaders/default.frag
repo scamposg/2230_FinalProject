@@ -49,11 +49,11 @@ void main() {
     }
     // UV Mapping
 
-
-//    fragColor = vec4(ambient + diffuse + specular,1.f);
-//    fragColor[0] = clamp(fragColor[0],0.f,1.f);
-//    fragColor[1] = clamp(fragColor[1],0.f,1.f);
-//    fragColor[2] = clamp(fragColor[2],0.f,1.f);
     fragColor = texture(objectTexture, UV);
+    fragColor += vec4(ambient + diffuse + specular,0.f);
+    fragColor[0] = clamp(fragColor[0],0.f,1.f);
+    fragColor[1] = clamp(fragColor[1],0.f,1.f);
+    fragColor[2] = clamp(fragColor[2],0.f,1.f);
+
 
 }
