@@ -11,12 +11,10 @@ void GLRenderer::apply_bezier_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2,
                                3.f*(1.f-t)*t*t*P2 + t*t*t*P3;
         glm::vec3 ray = glm::cross(next_curve-curve,glm::vec3(-1,0,0));
         glm::vec3 up(0,1,0);
-        float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up)));
-        glm::vec4 prior_pos = m_original_road_matrices[i]*glm::vec4(1);
+        float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up))) + glm::radians(180.f);
+        glm::vec4 prior_pos = m_original_road_matrices[i]*glm::vec4(0,0,0,1);
         m_road_matrices[i] = m_original_road_matrices[i]*glm::translate(glm::vec3(0,curve.y-prior_pos.y,curve.z-prior_pos.z))*glm::rotate(-theta,glm::vec3(1,0,0));
     }
-    P0 = P0 + glm::vec3(0,0.75,0.75);
-    P1 = P1 + glm::vec3(0,0.75,0.75);
     P2 = P2 + glm::vec3(0,0.75,0.75);
     P3 = P3 + glm::vec3(0,0.75,0.75);
     for (int i=0; i<m_building_matrices.size(); i++){
@@ -28,8 +26,8 @@ void GLRenderer::apply_bezier_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2,
                                3.f*(1.f-t)*t*t*P2 + t*t*t*P3;
         glm::vec3 ray = glm::cross(next_curve-curve,glm::vec3(-1,0,0));
         glm::vec3 up(0,1,0);
-        float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up)));
-        glm::vec4 prior_pos = m_original_building_matrices[i]*glm::vec4(1);
+        float theta = acos(glm::dot(ray,up)/abs(glm::length(ray)*glm::length(up))) + glm::radians(180.f);
+        glm::vec4 prior_pos = m_original_building_matrices[i]*glm::vec4(0,-0.5,0,1);
         m_building_matrices[i] = m_original_building_matrices[i]*glm::translate(glm::vec3(0,curve.y-prior_pos.y,curve.z-prior_pos.z))*glm::rotate(-theta,glm::vec3(1,0,0));
     }
 
