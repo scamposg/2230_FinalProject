@@ -12,9 +12,8 @@ GLRenderer::GLRenderer(QWidget *parent)
     : QOpenGLWidget(parent),
       m_lightPos(10,0,0,1),
       m_ka(0.1),
-      m_kd(0.2),
-      m_ks(1),
-      m_kt(0.8), // Might want to change these values
+      m_kd(0.8),
+      m_ks(1), // Might want to change these values
       m_shininess(15),
       m_angleX(6),
       m_angleY(0),
@@ -318,8 +317,6 @@ void GLRenderer::paintGL()
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
 
         // UV mapping
-        glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
-
         int random = rand() % 11;
         glActiveTexture(0);
         glBindTexture(GL_TEXTURE_2D, *textureArray[random]);
@@ -383,56 +380,12 @@ void GLRenderer::rebuildMatrices() {
 }
 
 void GLRenderer::loadTextures() {
-    for (int i = 1; i <= 11; i++) {
-        QString tex_filepath = QString((":/resources/textures/facade_diffuse" + std::to_string(i) + ".png").c_str());
+    for (int i = 0; i < 11; i++) {
+        QString tex_filepath = QString((":/resources/textures/facade_diffuse" + std::to_string(i + 1) + ".png").c_str());
         QImage *m_tex;
         GLuint *m_tex_texture;
-        switch (i) {
-        case 1:
-            m_tex = &m_tex1;
-            m_tex_texture = &m_tex1_texture;
-            break;
-        case 2:
-            m_tex = &m_tex2;
-            m_tex_texture = &m_tex2_texture;
-            break;
-        case 3:
-            m_tex = &m_tex3;
-            m_tex_texture = &m_tex3_texture;
-            break;
-        case 4:
-            m_tex = &m_tex4;
-            m_tex_texture = &m_tex4_texture;
-            break;
-        case 5:
-            m_tex = &m_tex5;
-            m_tex_texture = &m_tex5_texture;
-            break;
-        case 6:
-            m_tex = &m_tex6;
-            m_tex_texture = &m_tex6_texture;
-            break;
-        case 7:
-            m_tex = &m_tex7;
-            m_tex_texture = &m_tex7_texture;
-            break;
-        case 8:
-            m_tex = &m_tex8;
-            m_tex_texture = &m_tex8_texture;
-            break;
-        case 9:
-            m_tex = &m_tex9;
-            m_tex_texture = &m_tex9_texture;
-            break;
-        case 10:
-            m_tex = &m_tex10;
-            m_tex_texture = &m_tex10_texture;
-            break;
-        case 11:
-            m_tex = &m_tex11;
-            m_tex_texture = &m_tex11_texture;
-            break;
-        }
+        m_tex = texArray[i];
+        m_tex_texture = textureArray[i];
         *m_tex = QImage(tex_filepath);
         *m_tex = m_tex->convertToFormat(QImage::Format_RGBA8888).mirrored();
         glGenTextures(1, &*m_tex_texture);

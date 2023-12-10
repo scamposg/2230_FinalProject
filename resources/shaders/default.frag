@@ -23,7 +23,6 @@ uniform float shininess;
 // UV Mapping
 in vec2 UV;
 in vec3 world_space_tangent;
-uniform float k_t;
 uniform sampler2D objectTexture;
 
 // Normal Mapping
@@ -45,7 +44,7 @@ void main() {
     vec4 surface_to_light_ray = normalize(vec4(world_space_light_position,0.f) - vec4(world_space_position, 0.f));
     vec4 world_space_normal_ray = normalize(vec4(world_space_normal,0.f));
     // diffuse = kd * dot ( normal, surface to light )
-    float diffuse = k_d * clamp(dot(world_space_normal_ray, surface_to_light_ray),0.f,1.f);
+        float diffuse = k_d * clamp(dot(world_space_normal_ray, surface_to_light_ray),0.f,1.f);
 //    fragColor = vec4(ambient + diffuse,ambient + diffuse,ambient + diffuse,1.f);
 
     // Task 14: add specular component to output color
@@ -56,12 +55,11 @@ void main() {
     float specular = k_s * pow(clamp(dot(reflected_ray,surface_to_camera_ray),0.f,1.f),shininess);
 
     // UV Mapping
-    vec3 textureColor = texture(objectTexture, UV).rgb * k_t;
-
-    //float sum = ambient + diffuse + specular + textureColor.x;
-    float sumr = textureColor.x;
-    float sumg = textureColor.y;
-    float sumb = textureColor.z;
+    vec3 textureColor = texture(objectTexture, UV).rgb;
+    float sum = ambient + diffuse + specular;
+    float sumr = textureColor.x + sum;
+    float sumg = textureColor.y + sum;
+    float sumb = textureColor.z + sum;
 
 //    float sumr = UV.x;
 //    float sumg = UV.y;

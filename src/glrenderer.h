@@ -48,7 +48,6 @@ private:
     float m_ka;
     float m_kd;
     float m_ks;
-    float m_kt; // UV mapping for texture component
 
     float m_shininess;
 
@@ -81,6 +80,7 @@ private:
     GLuint m_tex10_texture;
     QImage m_tex11;
     GLuint m_tex11_texture;
+    QImage *texArray[11] = {&m_tex1, &m_tex2, &m_tex3, &m_tex4, &m_tex5, &m_tex6, &m_tex7, &m_tex8, &m_tex9, &m_tex10, &m_tex11};
     GLuint *textureArray[11] = {&m_tex1_texture, &m_tex2_texture, &m_tex3_texture, &m_tex4_texture, &m_tex5_texture, &m_tex6_texture,
                                &m_tex7_texture, &m_tex8_texture, &m_tex9_texture, &m_tex10_texture, &m_tex11_texture};
 };
