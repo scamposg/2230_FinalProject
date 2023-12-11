@@ -50,6 +50,7 @@ void GLRenderer::initializeGL()
 {
     m_timer = startTimer(1000/60);
     m_elapsedTimer.start();
+    m_device_pixel_ratio = this->devicePixelRatio();
 
     // Initialize GL extension wrangler
     glewExperimental = GL_TRUE;
@@ -66,6 +67,32 @@ void GLRenderer::initializeGL()
     // Task 1: call ShaderLoader::createShaderProgram with the paths to the vertex
     //         and fragment shaders. Then, store its return value in `m_shader`
     m_shader = ShaderLoader::createShaderProgram(":/resources/shaders/default.vert",":/resources/shaders/default.frag");
+    m_shadow_shader = ShaderLoader::createShaderProgram(":/resources/shaders/shadow.vert",":/resources/shaders/shadow.frag");
+
+    // Create the framebuffer
+    glGenFramebuffers(1, &m_shadow_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_shadow_framebuffer);
+
+    // Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+    glGenTextures(1, &m_shadow_depth_texture);
+    glBindTexture(GL_TEXTURE_2D, m_shadow_depth_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, size().width() * m_device_pixel_ratio,
+                 size().height() * m_device_pixel_ratio, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_shadow_depth_texture, 0);
+
+    glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+
+    // Always check that our framebuffer is ok
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        return;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D,0);
 
     // Generate and bind VBO
     glGenBuffers(1, &m_cube_vbo);

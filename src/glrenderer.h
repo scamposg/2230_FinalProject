@@ -48,8 +48,13 @@ private:
     int m_timer;                                        // Stores timer which attempts to run ~60 times per second
     QElapsedTimer m_elapsedTimer;                       // Stores timer which keeps track of actual time between frames
     bool m_to_play = false;
+    int m_device_pixel_ratio;
 
     GLuint m_shader;     // Stores id of shader program
+    GLuint m_shadow_shader;
+    GLuint m_shadow_framebuffer;
+    GLuint m_shadow_depth_texture;
+
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;

@@ -47,7 +47,11 @@ qt_add_resources(${PROJECT_NAME} "Resources"
   resources/textures/road_diffuse.jpeg
   resources/shaders/default.vert
   resources/shaders/default.frag
+  resources/shaders/shadow.vert
+  resources/shaders/shadow.frag
 )
+
+
 
 # GLEW: this creates its library and allows you to `#include "GL/glew.h"`
 add_library(StaticGLEW STATIC glew/src/glew.c)
