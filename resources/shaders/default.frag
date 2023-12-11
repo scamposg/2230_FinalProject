@@ -45,6 +45,7 @@ void main() {
 
     // UV Mapping
     vec3 textureColor = texture(objectTexture, UV).rgb;
+    //vec3 textureColor = vec3(0.5f, 0.5f, 0.5f);
     //vec3 textureColor = texture(normalMap, UV).rgb;
 
     float sum = ambient + diffuse + specular;
