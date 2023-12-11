@@ -42,9 +42,30 @@ qt_add_resources(${PROJECT_NAME} "Resources"
   PREFIX
   "/"
   FILES
-  resources/textures/facade_diffuse.png
-  resources/textures/facade_normal.png
+  resources/textures/facade_diffuse1.png
+    resources/textures/facade_diffuse2.png
+    resources/textures/facade_diffuse3.png
+    resources/textures/facade_diffuse4.png
+    resources/textures/facade_diffuse5.png
+    resources/textures/facade_diffuse6.png
+    resources/textures/facade_diffuse7.png
+    resources/textures/facade_diffuse8.png
+    resources/textures/facade_diffuse9.png
+    resources/textures/facade_diffuse10.png
+    resources/textures/facade_diffuse11.png
+    resources/textures/facade_normal1.png
+    resources/textures/facade_normal2.png
+    resources/textures/facade_normal3.png
+    resources/textures/facade_normal4.png
+    resources/textures/facade_normal5.png
+    resources/textures/facade_normal6.png
+    resources/textures/facade_normal7.png
+    resources/textures/facade_normal8.png
+    resources/textures/facade_normal9.png
+    resources/textures/facade_normal10.png
+    resources/textures/facade_normal11.png
   resources/textures/road_diffuse.jpeg
+  resources/textures/road_normal.png
   resources/shaders/default.vert
   resources/shaders/default.frag
   resources/shaders/shadow.vert

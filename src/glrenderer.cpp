@@ -10,11 +10,10 @@
 
 GLRenderer::GLRenderer(QWidget *parent)
     : QOpenGLWidget(parent),
-      m_light_direction(0.1,-100,-10,0),
+      m_light_direction(-10,0,-25,1),
       m_ka(0.1),
       m_kd(0.2),
       m_ks(1),
-      m_kt(0.8), // Might want to change these values
       m_shininess(15),
       m_angleX(6),
       m_angleY(0),
@@ -107,14 +106,18 @@ void GLRenderer::initializeGL()
 
     // Enable and define attribute 0 to store vertex positions
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(0));
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
 
     // UV Mapping
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+
+    // Tangent vector for normal mapping
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(8 * sizeof(GLfloat)));
 
     // Clean-up bindings
     glBindVertexArray(0);
@@ -133,42 +136,24 @@ void GLRenderer::initializeGL()
 
     // Enable and define attribute 0 to store vertex positions
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(0));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(0));
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(3 * sizeof(GLfloat)));
 
     // UV Mapping
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(6 * sizeof(GLfloat)));
+
+    // Tangent vector for normal mapping
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,11 * sizeof(GLfloat),reinterpret_cast<void *>(8 * sizeof(GLfloat)));
 
     // Clean-up bindings
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
-    QString road_filepath = QString(":/resources/textures/road_diffuse.jpeg");
-    m_road_image = QImage(road_filepath);
-    m_road_image = m_road_image.convertToFormat(QImage::Format_RGBA8888).mirrored();
-    glGenTextures(1,&m_road_texture);
-
-    glBindTexture(GL_TEXTURE_2D,m_road_texture);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,m_road_image.width(),m_road_image.height(),
-                 0,GL_RGBA,GL_UNSIGNED_BYTE,m_road_image.bits());
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D,0);
-
-    QString building_filepath = QString(":/resources/textures/facade_diffuse.png");
-    m_building_image = QImage(building_filepath);
-    m_building_image = m_building_image.convertToFormat(QImage::Format_RGBA8888).mirrored();
-    glGenTextures(1,&m_building_texture);
-
-    glBindTexture(GL_TEXTURE_2D,m_building_texture);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,m_building_image.width(),m_building_image.height(),
-                 0,GL_RGBA,GL_UNSIGNED_BYTE,m_building_image.bits());
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D,0);
+    loadTextures();
 
     rebuildMatrices();
 }
@@ -184,49 +169,50 @@ void GLRenderer::paintGL()
 
 void GLRenderer::paint_buildings(){
 
+    srand(12345);
     for (int i=0; i < m_building_matrices.size(); i++) {
-        glBindTexture(GL_TEXTURE_2D,m_building_texture);
         // Bind Sphere Vertex Data
         glBindVertexArray(m_cube_vao);
 
-        // Activate the shader program by calling glUseProgram with `m_shader`
+        // Task 2: activate the shader program by calling glUseProgram with `m_shader`
         glUseProgram(m_shader);
 
-        // Pass in building color data
-        glUniform3fv(glGetUniformLocation(m_shader,"object_ambient"),1,&building_ambient[0]);
-        glUniform3fv(glGetUniformLocation(m_shader,"object_diffuse"),1,&building_diffuse[0]);
-        glUniform3fv(glGetUniformLocation(m_shader,"object_specular"),1,&building_specular[0]);
-
-        // pass in m_model as a uniform into the shader program
+        // Task 6: pass in m_model as a uniform into the shader program
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_building_matrices[i][0][0]);
         glm::mat4 model_matrix_glm = glm::mat4(m_building_matrices[i]);
         glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_building_matrices[i]));
         glUniformMatrix3fv(glGetUniformLocation(m_shader,"inverse_transpose_matrix"),1,GL_FALSE,&inverse_transpose[0][0]);
 
-        // pass in m_view and m_proj
+        // Task 7: pass in m_view and m_proj
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"view_matrix"),1,GL_FALSE,&m_view[0][0]);
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"projection_matrix"),1,GL_FALSE,&m_proj[0][0]);
 
-
-        // pass m_ka into the fragment shader as a uniform
+        // Task 12: pass m_ka into the fragment shader as a uniform
         glUniform1f(glGetUniformLocation(m_shader,"k_a"),m_ka);
 
-        // pass light position and m_kd into the fragment shader as a uniform
+        // Task 13: pass light position and m_kd into the fragment shader as a uniform
         glUniform1f(glGetUniformLocation(m_shader,"k_d"),m_kd);
-        glUniform3fv(glGetUniformLocation(m_shader,"world_space_light_direction"),1,&m_light_direction[0]);
+        glUniform3fv(glGetUniformLocation(m_shader,"world_space_light_position"),1,&m_light_direction[0]);
 
-        // pass shininess, m_ks, and world-space camera position
+        // Task 14: pass shininess, m_ks, and world-space camera position
         glm::vec3 camera_world_space = glm::vec3(glm::inverse(m_view) * glm::vec4(0.f,0.f,0.f,1.f));
         glUniform1f(glGetUniformLocation(m_shader,"k_s"),m_ks);
         glUniform3fv(glGetUniformLocation(m_shader,"camera_position"),1,&camera_world_space[0]);
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
 
-        // UV mapping
-        glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
+        // UV and Normal mapping
+        int random = rand() % 11;
+        glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), 0);
+        glUniform1i(glGetUniformLocation(m_shader, "normalMap"), 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, *textureArray[random]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, *normTextureArray[random]);
 
         // Draw Command
         glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);
         // Unbind Vertex Array
+        glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
 
         // Task 3: deactivate the shader program by passing 0 into glUseProgram
@@ -237,18 +223,12 @@ void GLRenderer::paint_buildings(){
 void GLRenderer::paint_roads(){
 
     for (int i=0; i < m_road_matrices.size(); i++) {
-//        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,m_road_texture);
-        // Bind Sphere Vertex Data
+        // Bind Road Vertex Data
         glBindVertexArray(m_road_vao);
 
         // Activate the shader program by calling glUseProgram with `m_shader`
         glUseProgram(m_shader);
 
-        // Pass in building color data
-        glUniform3fv(glGetUniformLocation(m_shader,"object_ambient"),1,&building_ambient[0]);
-        glUniform3fv(glGetUniformLocation(m_shader,"object_diffuse"),1,&building_diffuse[0]);
-        glUniform3fv(glGetUniformLocation(m_shader,"object_specular"),1,&building_specular[0]);
 
         // pass in m_model as a uniform into the shader program
         glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_road_matrices[i][0][0]);
@@ -274,14 +254,20 @@ void GLRenderer::paint_roads(){
         glUniform3fv(glGetUniformLocation(m_shader,"camera_position"),1,&camera_world_space[0]);
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
 
-        // UV mapping
-        glUniform1f(glGetUniformLocation(m_shader,"k_t"),m_kt);
+        // UV and Normal mapping
+        int random = rand() % 11;
+        glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), 0);
+        glUniform1i(glGetUniformLocation(m_shader, "normalMap"), 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_road_texture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_road_normal_texture);
 
         // Draw Command
         glDrawArrays(GL_TRIANGLES, 0, m_roadData.size() / 3);
         // Unbind Vertex Array
-        glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D,0);
+        glBindVertexArray(0);
 
         // Task 3: deactivate the shader program by passing 0 into glUseProgram
         glUseProgram(0);
@@ -341,4 +327,63 @@ void GLRenderer::timerEvent(QTimerEvent *event) {
     }
 
     update(); // asks for a PaintGL() call to occur
+}
+
+void GLRenderer::loadTextures() {
+    for (int i = 0; i < 11; i++) {
+        QString tex_filepath = QString((":/resources/textures/facade_diffuse" + std::to_string(i + 1) + ".png").c_str());
+        QString norm_filepath = QString((":/resources/textures/facade_normal" + std::to_string(i + 1) + ".png").c_str());
+        QImage *m_tex;
+        GLuint *m_tex_texture;
+        QImage *m_norm;
+        GLuint *m_norm_texture;
+        m_tex = texArray[i];
+        m_tex_texture = textureArray[i];
+        m_norm = normArray[i];
+        m_norm_texture = normTextureArray[i];
+        *m_tex = QImage(tex_filepath);
+        *m_tex = m_tex->convertToFormat(QImage::Format_RGBA8888).mirrored();
+        *m_norm = QImage(norm_filepath);
+        *m_norm = m_norm->convertToFormat(QImage::Format_RGBA8888).mirrored();
+
+        glGenTextures(1, &*m_tex_texture);
+        glActiveTexture(0);
+        glBindTexture(GL_TEXTURE_2D, *m_tex_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_tex->width(), m_tex->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_tex->bits());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind
+
+        glGenTextures(1, &*m_norm_texture);
+        glActiveTexture(1);
+        glBindTexture(GL_TEXTURE_2D, *m_norm_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_norm->width(), m_norm->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_norm->bits());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind
+    }
+
+    QString road_filepath = QString(":/resources/textures/road_diffuse.jpeg");
+    m_road_image = QImage(road_filepath);
+    m_road_image = m_road_image.convertToFormat(QImage::Format_RGBA8888).mirrored();
+    glGenTextures(1,&m_road_texture);
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_2D,m_road_texture);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,m_road_image.width(),m_road_image.height(),
+                 0,GL_RGBA,GL_UNSIGNED_BYTE,m_road_image.bits());
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D,0);
+
+    QString road_normal_filepath = QString(":/resources/textures/road_normal.png");
+    m_road_normal_image = QImage(road_normal_filepath);
+    m_road_normal_image = m_road_normal_image.convertToFormat(QImage::Format_RGBA8888).mirrored();
+    glGenTextures(1,&m_road_normal_texture);
+    glActiveTexture(1);
+    glBindTexture(GL_TEXTURE_2D,m_road_normal_texture);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,m_road_normal_image.width(),m_road_normal_image.height(),
+                 0,GL_RGBA,GL_UNSIGNED_BYTE,m_road_normal_image.bits());
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D,0);
 }

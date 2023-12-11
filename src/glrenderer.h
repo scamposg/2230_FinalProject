@@ -73,6 +73,8 @@ private:
     std::vector<float>m_road_z_buffer;
     QImage m_road_image;
     GLuint m_road_texture;
+    QImage m_road_normal_image;
+    GLuint m_road_normal_texture;
     std::vector<float> generateRoadData();
 
 
@@ -133,4 +135,57 @@ private:
     float  m_angleX;
     float  m_angleY;
     float  m_zoom;
+
+    // UV Mapping and Normal Mapping stuff
+    void loadTextures();
+    QImage m_tex1;
+    GLuint m_tex1_texture;
+    QImage m_tex2;
+    GLuint m_tex2_texture;
+    QImage m_tex3;
+    GLuint m_tex3_texture;
+    QImage m_tex4;
+    GLuint m_tex4_texture;
+    QImage m_tex5;
+    GLuint m_tex5_texture;
+    QImage m_tex6;
+    GLuint m_tex6_texture;
+    QImage m_tex7;
+    GLuint m_tex7_texture;
+    QImage m_tex8;
+    GLuint m_tex8_texture;
+    QImage m_tex9;
+    GLuint m_tex9_texture;
+    QImage m_tex10;
+    GLuint m_tex10_texture;
+    QImage m_tex11;
+    GLuint m_tex11_texture;
+    QImage m_norm1;
+    GLuint m_norm1_texture;
+    QImage m_norm2;
+    GLuint m_norm2_texture;
+    QImage m_norm3;
+    GLuint m_norm3_texture;
+    QImage m_norm4;
+    GLuint m_norm4_texture;
+    QImage m_norm5;
+    GLuint m_norm5_texture;
+    QImage m_norm6;
+    GLuint m_norm6_texture;
+    QImage m_norm7;
+    GLuint m_norm7_texture;
+    QImage m_norm8;
+    GLuint m_norm8_texture;
+    QImage m_norm9;
+    GLuint m_norm9_texture;
+    QImage m_norm10;
+    GLuint m_norm10_texture;
+    QImage m_norm11;
+    GLuint m_norm11_texture;
+    QImage *normArray[11] = {&m_norm1, &m_norm2, &m_norm3, &m_norm4, &m_norm5, &m_norm6, &m_norm7, &m_norm8, &m_norm9, &m_norm10, &m_norm11};
+    GLuint *normTextureArray[11] = {&m_norm1_texture, &m_norm2_texture, &m_norm3_texture, &m_norm4_texture, &m_norm5_texture, &m_norm6_texture,
+                                    &m_norm7_texture, &m_norm8_texture, &m_norm9_texture, &m_norm10_texture, &m_norm11_texture};
+    QImage *texArray[11] = {&m_tex1, &m_tex2, &m_tex3, &m_tex4, &m_tex5, &m_tex6, &m_tex7, &m_tex8, &m_tex9, &m_tex10, &m_tex11};
+    GLuint *textureArray[11] = {&m_tex1_texture, &m_tex2_texture, &m_tex3_texture, &m_tex4_texture, &m_tex5_texture, &m_tex6_texture,
+                                &m_tex7_texture, &m_tex8_texture, &m_tex9_texture, &m_tex10_texture, &m_tex11_texture};
 };

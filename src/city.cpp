@@ -30,6 +30,7 @@ void create_l_system_string(std::vector<char> &previous, int recurse_count){
             final_string.push_back('L');
             final_string.push_back('B');
             final_string.push_back('B');
+            final_string.push_back('B');
         }
         else {
             final_string.push_back(previous[i]);
@@ -98,7 +99,7 @@ bool within_bounds(glm::vec3 loc, float radius){
 void GLRenderer::get_city_matrices(){
     std::vector<char> l_string;
     l_string.push_back('X');
-    create_l_system_string(l_string,7);
+    create_l_system_string(l_string,5);
 
     std::vector<glm::mat4> prior_ctms;
     glm::mat4 current_ctm(1);
