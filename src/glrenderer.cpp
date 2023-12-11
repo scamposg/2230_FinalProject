@@ -316,11 +316,14 @@ void GLRenderer::paintGL()
         glUniform3fv(glGetUniformLocation(m_shader,"camera_position"),1,&camera_world_space[0]);
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
 
-        // UV mapping
+        // UV and Normal mapping
         int random = rand() % 11;
-        glActiveTexture(0);
-        glBindTexture(GL_TEXTURE_2D, *textureArray[random]);
         glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), 0);
+        glUniform1i(glGetUniformLocation(m_shader, "normalMap"), 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, *textureArray[random]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, *normTextureArray[random]);
 
         // Draw Command
         glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);
@@ -382,12 +385,20 @@ void GLRenderer::rebuildMatrices() {
 void GLRenderer::loadTextures() {
     for (int i = 0; i < 11; i++) {
         QString tex_filepath = QString((":/resources/textures/facade_diffuse" + std::to_string(i + 1) + ".png").c_str());
+        QString norm_filepath = QString((":/resources/textures/facade_normal" + std::to_string(i + 1) + ".png").c_str());
         QImage *m_tex;
         GLuint *m_tex_texture;
+        QImage *m_norm;
+        GLuint *m_norm_texture;
         m_tex = texArray[i];
         m_tex_texture = textureArray[i];
+        m_norm = normArray[i];
+        m_norm_texture = normTextureArray[i];
         *m_tex = QImage(tex_filepath);
         *m_tex = m_tex->convertToFormat(QImage::Format_RGBA8888).mirrored();
+        *m_norm = QImage(norm_filepath);
+        *m_norm = m_norm->convertToFormat(QImage::Format_RGBA8888).mirrored();
+
         glGenTextures(1, &*m_tex_texture);
         glActiveTexture(0);
         glBindTexture(GL_TEXTURE_2D, *m_tex_texture);
@@ -395,7 +406,13 @@ void GLRenderer::loadTextures() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0); // Unbind
-        glUseProgram(m_shader);
-        glUseProgram(0);
+
+        glGenTextures(1, &*m_norm_texture);
+        glActiveTexture(1);
+        glBindTexture(GL_TEXTURE_2D, *m_norm_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_norm->width(), m_norm->height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_norm->bits());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind
     }
 }
