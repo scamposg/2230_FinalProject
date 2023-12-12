@@ -155,6 +155,17 @@ void GLRenderer::initializeGL()
 
     loadTextures();
 
+    // Shadow mapping matrix calculations
+    glm::vec3 lightInvDir = glm::vec3(m_light_direction);
+    // Compute the MVP matrix from the light's point of view
+    glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-10,20); // Should we change these values?
+    glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0,0,0), glm::vec3(0,1,0));
+    glm::mat4 depthModelMatrix = glm::mat4(1.0);
+    glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+    // Send our transformation to the currently bound shader,
+    // in the "MVP" uniform
+    glUniformMatrix4fv(glGetUniformLocation(m_shader,"shadow_depth_matrix"), 1, GL_FALSE, &depthMVP[0][0]);
+
     rebuildMatrices();
 }
 
@@ -255,7 +266,6 @@ void GLRenderer::paint_roads(){
         glUniform1f(glGetUniformLocation(m_shader,"shininess"),m_shininess);
 
         // UV and Normal mapping
-        int random = rand() % 11;
         glUniform1i(glGetUniformLocation(m_shader, "objectTexture"), 0);
         glUniform1i(glGetUniformLocation(m_shader, "normalMap"), 1);
         glActiveTexture(GL_TEXTURE0);
