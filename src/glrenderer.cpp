@@ -13,7 +13,7 @@ GLRenderer::GLRenderer(QWidget *parent)
       m_light_direction(-10,0,-25,1),
       m_ka(0.1),
       m_kd(0.2),
-      m_ks(1),
+      m_ks(0.7),
       m_shininess(15),
       m_angleX(6),
       m_angleY(0),
@@ -161,10 +161,10 @@ void GLRenderer::initializeGL()
     glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10,10,-10,10,-10,20); // Should we change these values?
     glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0,0,0), glm::vec3(0,1,0));
     glm::mat4 depthModelMatrix = glm::mat4(1.0);
-    glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+    m_depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
-    glUniformMatrix4fv(glGetUniformLocation(m_shadow_shader,"shadow_depth_matrix"), 1, GL_FALSE, &depthMVP[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shadow_shader,"shadow_depth_matrix"), 1, GL_FALSE, &m_depthMVP[0][0]);
 
     rebuildMatrices();
 }
@@ -173,9 +173,26 @@ void GLRenderer::paintGL()
 {
     // Clear screen color and depth before painting
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    shadow_map();
     paint_roads();
     paint_buildings();
 
+}
+
+void GLRenderer::shadow_map() {
+    glUseProgram(m_shader);
+    glm::mat4 biasMatrix(
+        0.5, 0.0, 0.0, 0.0,
+        0.0, 0.5, 0.0, 0.0,
+        0.0, 0.0, 0.5, 0.0,
+        0.5, 0.5, 0.5, 1.0
+        );
+    glm::mat4 depthBiasMVP = biasMatrix * m_depthMVP;
+    glUniformMatrix4fv(glGetUniformLocation(m_shader,"depth_bias_mvp"), 1, GL_FALSE, &depthBiasMVP[0][0]);
+    glUniform1i(glGetUniformLocation(m_shader, "shadowMap"), 2);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, m_shadow_depth_texture);
+    glUseProgram(0);
 }
 
 void GLRenderer::paint_buildings(){

@@ -11,11 +11,13 @@ out vec3 world_space_position;
 out vec3 world_space_normal;
 out vec2 UV; // UV mapping
 out vec3 world_space_tangent; // Tangent vector for normal mapping
+out vec3 shadow_coord; // For shadow mapping
 
 uniform mat4 model_matrix;
 uniform mat3 inverse_transpose_matrix;
 uniform mat4 view_matrix;
 uniform mat4 projection_matrix;
+uniform mat4 depth_bias_mvp;
 
 void main() {
     world_space_position =  vec3(model_matrix * vec4(object_space_position,1.0));
@@ -24,13 +26,6 @@ void main() {
 
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(object_space_position,1.0);
 
-    UV = vertex_UV; // Just pass on the UV coordinate to the fragment shader.
-
-    // Shadow mapping
-    mat4 biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 0.5f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 0.5f, 0.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f);
-
-    glm::mat4 depthBiasMVP = biasMatrix*depthMVP;
+    UV = vertex_UV; // Just pass on the UV coordinate to the fragment shader
+    shadow_coord = vec3(depth_bias_mvp * vec4(object_space_position,1)); // Shadow mapping
 }

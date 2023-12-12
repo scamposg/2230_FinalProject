@@ -41,6 +41,7 @@ protected:
     void rebuildMatrices();                        // Used for camera movement
     void paint_roads();
     void paint_buildings();
+    void shadow_map();
 
 private:
 
@@ -105,6 +106,7 @@ private:
     glm::mat4 m_view_original;
     glm::mat4 m_view;
     glm::mat4 m_proj;
+    glm::mat4 m_depthMVP;
 
     float m_camera_jitter_value=0.1;
 
