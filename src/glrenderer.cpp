@@ -164,7 +164,7 @@ void GLRenderer::initializeGL()
     glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"shadow_depth_matrix"), 1, GL_FALSE, &depthMVP[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shadow_shader,"shadow_depth_matrix"), 1, GL_FALSE, &depthMVP[0][0]);
 
     rebuildMatrices();
 }
