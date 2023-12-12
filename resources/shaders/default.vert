@@ -27,5 +27,5 @@ void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(object_space_position,1.0);
 
     UV = vertex_UV; // Just pass on the UV coordinate to the fragment shader
-    shadow_coord = vec3(depth_bias_mvp * vec4(object_space_position,1)); // Shadow mapping
+    shadow_coord = vec3(depth_bias_mvp * model_matrix * vec4(object_space_position,1)); // Shadow mapping
 }
