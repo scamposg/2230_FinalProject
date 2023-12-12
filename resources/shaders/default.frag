@@ -16,6 +16,7 @@ uniform vec3 camera_position;
 uniform sampler2D objectTexture;
 uniform sampler2D normalMap;
 
+// Based on the tutorial from https://ogldev.org/www/tutorial26/tutorial26.html
 vec4 CalcBumpedNormal()
 {
     vec3 Normal = normalize(world_space_normal);
