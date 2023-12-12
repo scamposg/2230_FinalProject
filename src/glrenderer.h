@@ -6,9 +6,14 @@
 #endif
 
 #include "GL/glew.h" // Must always be first include
+#include "glm/glm.hpp"
+#include <unordered_map>
+#include <QCoreApplication>
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
-#include "glm/glm.hpp"
+#include <QMouseEvent>
+#include <QKeyEvent>
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/constants.hpp"
@@ -35,8 +40,11 @@ protected:
     void paintGL()                       override; // Called every frame in a loop
     void resizeGL(int width, int height) override; // Called when window size changes
     void timerEvent(QTimerEvent *event)  override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *e) override; // Used for camera movement
     void mouseMoveEvent(QMouseEvent *e)  override; // Used for camera movement
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *e)      override; // Used for camera movement
     void rebuildMatrices();                        // Used for camera movement
     void paint_roads();
@@ -49,6 +57,9 @@ private:
     QElapsedTimer m_elapsedTimer;                       // Stores timer which keeps track of actual time between frames
     bool m_to_play = false;
     int m_device_pixel_ratio;
+    std::unordered_map<Qt::Key, bool> m_keyMap;         // Stores whether keys are pressed or not
+    Qt::Key pressed_key;
+    bool is_key_pressed;
 
     GLuint m_shader;     // Stores id of shader program
     GLuint m_shadow_shader;
@@ -122,6 +133,9 @@ private:
     glm::mat4 get_view_matrix();
     glm::mat4 get_proj_matrix();
     void rotate_camera(float theta, glm::vec3 axis);
+    void translate_camera(float scale);
+    bool key_pressed();
+    bool key_released();
 
     glm::vec4 m_light_direction; // The world-space position of the point light
 

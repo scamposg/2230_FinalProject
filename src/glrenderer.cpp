@@ -2,8 +2,6 @@
 
 #include <QCoreApplication>
 #include "src/shaderloader.h"
-
-#include <QMouseEvent>
 #include <unistd.h>
 //#include <Windows.h>
 
@@ -281,6 +279,18 @@ void GLRenderer::resizeGL(int w, int h)
     m_proj = glm::perspective(glm::radians(45.0),1.0 * w / h,0.01,100.0);
 }
 
+void GLRenderer::keyPressEvent(QKeyEvent *event) {
+    m_keyMap[Qt::Key(event->key())] = true;
+    pressed_key = Qt::Key(event->key());
+    is_key_pressed = true;
+
+}
+
+void GLRenderer::keyReleaseEvent(QKeyEvent *event) {
+    m_keyMap[Qt::Key(event->key())] = false;
+    is_key_pressed = false;
+}
+
 void GLRenderer::mousePressEvent(QMouseEvent *event) {
     // Set initial mouse position
     m_prevMousePos = event->pos();
@@ -306,6 +316,10 @@ void GLRenderer::wheelEvent(QWheelEvent *event) {
 void GLRenderer::timerEvent(QTimerEvent *event) {
     int elapsedms   = m_elapsedTimer.elapsed();
     float deltaTime = elapsedms * 0.001f/3.f ;
+
+    if (is_key_pressed){
+        translate_camera(deltaTime * move_speed);
+    }
 
     // Use deltaTime and m_keyMap here to move around
     if (m_to_play){

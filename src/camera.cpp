@@ -1,5 +1,14 @@
 #include "glrenderer.h"
 
+glm::mat4 get_translation_mat(glm::vec3 shift){
+    glm::vec4 col0(1.f,0.f,0.f,0.f);
+    glm::vec4 col1(0.f,1.f,0.f,0.f);
+    glm::vec4 col2(0.f,0.f,1.f,0.f);
+    glm::vec4 col3(-shift.x,-shift.y,-shift.z,1.f);
+
+    return glm::mat4(col0,col1,col2,col3);
+}
+
 glm::mat3 get_rotation_mat(float theta, glm::vec3 u){
     glm::vec3 col0(std::cos(theta) + (std::pow(u.x,2.f)*(1-std::cos(theta))),
                    u.x*u.y*(1-std::cos(theta) + u.z*std::sin(theta)),
@@ -76,6 +85,88 @@ void GLRenderer::rotate_camera(float theta, glm::vec3 axis){
 
 
 }
+
+bool GLRenderer::key_released(){
+    if (m_keyMap[pressed_key] == false) return true;
+    return false;
+}
+
+bool GLRenderer::key_pressed(){
+    if (m_keyMap[Qt::Key_W]){
+        pressed_key = Qt::Key_W;
+        return true;
+    }
+    else if (m_keyMap[Qt::Key_S]){
+        pressed_key = Qt::Key_S;
+        return true;
+    }
+    else if (m_keyMap[Qt::Key_A]){
+        pressed_key = Qt::Key_A;
+        return true;
+    }
+    else if (m_keyMap[Qt::Key_D]){
+        pressed_key = Qt::Key_D;
+        return true;
+    }
+    else if (m_keyMap[Qt::Key_Space]){
+        pressed_key = Qt::Key_Space;
+        return true;
+    }
+    else if (m_keyMap[Qt::Key_Control]){
+        pressed_key = Qt::Key_Control;
+        return true;
+    }
+
+    return false;
+}
+
+void GLRenderer::translate_camera(float scale){
+    glm::mat4 transform;
+    glm::vec3 shift;
+    switch(pressed_key){
+    case(Qt::Key_W):
+        //move in look vector
+        shift = -scale*glm::normalize(glm::vec3(m_camera_look));
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    case(Qt::Key_S):
+        //move in -look vector
+        shift = scale*glm::normalize(glm::vec3(m_camera_look));
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    case(Qt::Key_A):
+        //move left perpendicular to look & up vectors
+        shift = scale*glm::normalize(glm::cross(glm::vec3(m_camera_look),
+                                                  glm::vec3(m_camera_up)));
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    case(Qt::Key_D):
+        //move right perpendicular to look & up vectors
+        shift = scale*-glm::normalize(glm::cross(glm::vec3(m_camera_look),
+                                                   glm::vec3(m_camera_up)));
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    case(Qt::Key_Space):
+        //move to (0,1,0)
+        shift = scale*glm::vec4(0.f,1.f,0.f,1.f);
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    case(Qt::Key_Control):
+        //move to (0,-1,0)
+        shift = scale*glm::vec4(0.f,-1.f,0.f,1.f);
+        transform = get_translation_mat(shift);
+        m_camera_pos = transform*glm::vec4(m_camera_pos,1.f);
+        break;
+    }
+
+    rebuildMatrices();
+}
+
 
 void GLRenderer::rebuildMatrices() {
     // Update view matrix by rotating eye vector based on x and y angles
