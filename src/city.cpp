@@ -108,16 +108,17 @@ void GLRenderer::get_city_matrices(){
 
     for (int i=0; i<std::size(l_string); i++){
         if (l_string[i] == 'B'){
-            glm::mat4 new_ctm = current_ctm*go_in_direction(dir);
+            std::shared_ptr<glm::mat4> new_ctm = std::make_shared<glm::mat4>
+                (current_ctm*go_in_direction(dir));
             glm::vec4 test(0,0,0,1);
-            test = new_ctm*test;
+            test = *new_ctm*test;
             if (!within_bounds(test,m_radius)){
                 dir = switch_dir(dir);
                 continue;
             }
             m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
-            current_ctm = new_ctm;
-            float z = test.z;
+            current_ctm = *new_ctm;
+            std::shared_ptr<float> z = std::make_shared<float>(test.z);
             m_road_z_buffer.push_back(z);
             m_road_matrices.push_back(new_ctm);
 
@@ -131,8 +132,8 @@ void GLRenderer::get_city_matrices(){
                 test = transform*test;
 //                if (m_city_map[get_map_loc(test.x,test.z,m_radius)])
 //                    continue;
-                m_building_matrices.push_back(transform);
-                m_building_z_buffer.push_back(test.z);
+                m_building_matrices.push_back(std::make_shared<glm::mat4>(transform));
+                m_building_z_buffer.push_back(std::make_shared<float>(test.z));
                 m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
             }
 

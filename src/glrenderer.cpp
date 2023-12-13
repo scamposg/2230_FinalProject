@@ -186,9 +186,10 @@ void GLRenderer::paint_buildings(){
         glUseProgram(m_shader);
 
         // Task 6: pass in m_model as a uniform into the shader program
-        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_building_matrices[i][0][0]);
-        glm::mat4 model_matrix_glm = glm::mat4(m_building_matrices[i]);
-        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_building_matrices[i]));
+        glm::mat4 model_matrix_glm = glm::mat4(*m_building_matrices[i]);
+        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&model_matrix_glm[0][0]);
+
+        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(*m_building_matrices[i]));
         glUniformMatrix3fv(glGetUniformLocation(m_shader,"inverse_transpose_matrix"),1,GL_FALSE,&inverse_transpose[0][0]);
 
         // Task 7: pass in m_view and m_proj
@@ -239,9 +240,10 @@ void GLRenderer::paint_roads(){
 
 
         // pass in m_model as a uniform into the shader program
-        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&m_road_matrices[i][0][0]);
-        glm::mat4 model_matrix_glm = glm::mat4(m_road_matrices[i]);
-        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(m_road_matrices[i]));
+        glm::mat4 model_matrix_glm = glm::mat4(*m_road_matrices[i]);
+        glUniformMatrix4fv(glGetUniformLocation(m_shader,"model_matrix"),1,GL_FALSE,&model_matrix_glm[0][0]);
+
+        glm::mat3 inverse_transpose = glm::inverse(glm::transpose(*m_road_matrices[i]));
         glUniformMatrix3fv(glGetUniformLocation(m_shader,"inverse_transpose_matrix"),1,GL_FALSE,&inverse_transpose[0][0]);
 
         // pass in m_view and m_proj

@@ -14,6 +14,7 @@
 #include <QTime>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <memory>
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
@@ -72,9 +73,9 @@ private:
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;
-    std::vector<glm::mat4> m_building_matrices;
-    std::vector<glm::mat4> m_original_building_matrices;
-    std::vector<float>m_building_z_buffer;
+    std::vector<std::shared_ptr<glm::mat4>> m_building_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_building_matrices;
+    std::vector<std::shared_ptr<float>> m_building_z_buffer;
     QImage m_building_image;
     GLuint m_building_texture;
     std::vector<float> generateCubeData();
@@ -82,9 +83,9 @@ private:
     GLuint m_road_vbo; // Stores id of vbo
     GLuint m_road_vao; // Stores id of vao
     std::vector<float> m_roadData;
-    std::vector<glm::mat4> m_road_matrices;
-    std::vector<glm::mat4> m_original_road_matrices;
-    std::vector<float>m_road_z_buffer;
+    std::vector<std::shared_ptr<glm::mat4>> m_road_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_road_matrices;
+    std::vector<std::shared_ptr<float>> m_road_z_buffer;
     QImage m_road_image;
     GLuint m_road_texture;
     QImage m_road_normal_image;
