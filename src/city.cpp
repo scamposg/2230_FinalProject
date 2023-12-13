@@ -210,6 +210,6 @@ void GLRenderer::generate_city(){
     m_original_road_matrices = m_road_matrices;
     m_original_grass_matrices = m_grass_matrices;
     m_original_building_matrices = m_building_matrices;
-//    apply_bezier_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2,m_curve_OG_3);
+    apply_bezier_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2,m_curve_OG_3);
     update();
 }

@@ -59,6 +59,7 @@ private:
     // Tick Related Variables
     int m_timer;                                        // Stores timer which attempts to run ~60 times per second
     QElapsedTimer m_elapsedTimer;                       // Stores timer which keeps track of actual time between frames
+    QElapsedTimer m_elapsedTimer_Keys;
     bool m_to_play = false;
     int m_device_pixel_ratio;
     std::unordered_map<Qt::Key, bool> m_keyMap;         // Stores whether keys are pressed or not

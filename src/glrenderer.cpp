@@ -19,7 +19,7 @@ GLRenderer::GLRenderer(QWidget *parent)
       m_angleY(0),
       m_zoom(2)
 {
-    rebuildMatrices();
+
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     m_keyMap[Qt::Key_W]       = false;
@@ -28,6 +28,7 @@ GLRenderer::GLRenderer(QWidget *parent)
     m_keyMap[Qt::Key_D]       = false;
     m_keyMap[Qt::Key_Control] = false;
     m_keyMap[Qt::Key_Space]   = false;
+    rebuildMatrices();
 }
 
 void GLRenderer::finish(){
@@ -57,6 +58,7 @@ void GLRenderer::initializeGL()
 {
     m_timer = startTimer(1000/60);
     m_elapsedTimer.start();
+    m_elapsedTimer_Keys.start();
     m_device_pixel_ratio = this->devicePixelRatio();
 
     // Initialize GL extension wrangler
@@ -393,9 +395,14 @@ void GLRenderer::wheelEvent(QWheelEvent *event) {
 void GLRenderer::timerEvent(QTimerEvent *event) {
     int elapsedms   = m_elapsedTimer.elapsed();
     float deltaTime = elapsedms * 0.001f ;
+    int elapsedms_keys = m_elapsedTimer_Keys.elapsed();
+    float deltaTime_keys = elapsedms_keys * 0.001f;
 
     if (is_key_pressed){
-        translate_camera(deltaTime * 10.f);
+        translate_camera(deltaTime_keys * 10.f);
+    }
+    else{
+        m_elapsedTimer_Keys.restart();
     }
 
     // Use deltaTime and m_keyMap here to move around
@@ -406,12 +413,14 @@ void GLRenderer::timerEvent(QTimerEvent *event) {
             rebuildMatrices();
         }
 
-        m_curve_1 = m_curve_OG_1+glm::vec3(0,std::min(1.f/deltaTime,0.3f),std::min(1.f/deltaTime,0.2f));
-        m_curve_2 = m_curve_OG_2+glm::vec3(0,std::min((deltaTime+1.f)/deltaTime,0.5f),std::min((deltaTime+1.f)/deltaTime,0.5f));
-        float z = -(m_radius-deltaTime-0.4f);
-        float y = 4.f*sqrtf(z+m_radius);
-        m_curve_3 = glm::vec3(0,y,z);
-        apply_bezier_matrices(m_curve_0,m_curve_1,m_curve_2,m_curve_3);
+        if(m_curve_3.y < 12.f){
+            m_curve_1 = m_curve_OG_1+glm::vec3(0,std::min(1.f/deltaTime,0.3f),std::min(1.f/deltaTime,0.2f));
+            m_curve_2 = m_curve_OG_2+glm::vec3(0,std::min((deltaTime+1.f)/deltaTime,0.5f),std::min((deltaTime+1.f)/deltaTime,0.5f));
+            float z = -(m_radius-deltaTime-0.4f);
+            float y = 3.f*sqrtf(z+m_radius);
+            m_curve_3 = glm::vec3(0,y,z);
+            apply_bezier_matrices(m_curve_0,m_curve_1,m_curve_2,m_curve_3);
+        }
     }
     else {
         m_elapsedTimer.restart();
