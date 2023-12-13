@@ -50,6 +50,9 @@ void main() {
     }
 
     // Diffuse
+//    vec4 surface_to_light_ray = normalize(vec4(world_space_light_position,0.f) - vec4(world_space_position, 0.f));
+    vec4 surface_to_light_ray = normalize(vec4(-world_space_light_position,0.f));
+    // diffuse = kd * dot ( normal, surface to light )
     float diffuse = k_d * clamp(dot(bumpedNormal, surface_to_light_ray),0.f,1.f);
     diffuse *= visibility;
 

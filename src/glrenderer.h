@@ -6,9 +6,16 @@
 #endif
 
 #include "GL/glew.h" // Must always be first include
+#include "glm/glm.hpp"
+#include <unordered_map>
+#include <QCoreApplication>
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
-#include "glm/glm.hpp"
+#include <QTime>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <memory>
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/constants.hpp"
@@ -35,21 +42,30 @@ protected:
     void paintGL()                       override; // Called every frame in a loop
     void resizeGL(int width, int height) override; // Called when window size changes
     void timerEvent(QTimerEvent *event)  override;
-    void mousePressEvent(QMouseEvent *e) override; // Used for camera movement
-    void mouseMoveEvent(QMouseEvent *e)  override; // Used for camera movement
-    void wheelEvent(QWheelEvent *e)      override; // Used for camera movement
+
     void rebuildMatrices();                        // Used for camera movement
     void paint_roads();
     void paint_buildings();
-    void shadow_map();
+    void paint_grass();
 
 private:
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *e) override; // Used for camera movement
+    void mouseMoveEvent(QMouseEvent *e)  override; // Used for camera movement
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *e)      override; // Used for camera movement
 
     // Tick Related Variables
     int m_timer;                                        // Stores timer which attempts to run ~60 times per second
     QElapsedTimer m_elapsedTimer;                       // Stores timer which keeps track of actual time between frames
+    QElapsedTimer m_elapsedTimer_Keys;
     bool m_to_play = false;
     int m_device_pixel_ratio;
+    std::unordered_map<Qt::Key, bool> m_keyMap;         // Stores whether keys are pressed or not
+    Qt::Key pressed_key;
+    bool is_key_pressed;
+    bool m_mouseDown;
 
     GLuint m_shader;     // Stores id of shader program
     GLuint m_shadow_shader;
@@ -59,9 +75,9 @@ private:
     GLuint m_cube_vbo; // Stores id of vbo
     GLuint m_cube_vao; // Stores id of vao
     std::vector<float> m_cubeData;
-    std::vector<glm::mat4> m_building_matrices;
-    std::vector<glm::mat4> m_original_building_matrices;
-    std::vector<float>m_building_z_buffer;
+    std::vector<std::shared_ptr<glm::mat4>> m_building_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_building_matrices;
+    std::vector<std::shared_ptr<float>> m_building_z_buffer;
     QImage m_building_image;
     GLuint m_building_texture;
     std::vector<float> generateCubeData();
@@ -69,15 +85,22 @@ private:
     GLuint m_road_vbo; // Stores id of vbo
     GLuint m_road_vao; // Stores id of vao
     std::vector<float> m_roadData;
-    std::vector<glm::mat4> m_road_matrices;
-    std::vector<glm::mat4> m_original_road_matrices;
-    std::vector<float>m_road_z_buffer;
+    std::vector<std::shared_ptr<glm::mat4>> m_road_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_road_matrices;
+    std::vector<std::shared_ptr<float>> m_road_z_buffer;
     QImage m_road_image;
     GLuint m_road_texture;
     QImage m_road_normal_image;
     GLuint m_road_normal_texture;
     std::vector<float> generateRoadData();
 
+    std::vector<std::shared_ptr<glm::mat4>> m_grass_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_grass_matrices;
+    std::vector<std::shared_ptr<float>> m_grass_z_buffer;
+    QImage m_grass_image;
+    GLuint m_grass_texture;
+    QImage m_grass_normal_image;
+    GLuint m_grass_normal_texture;
 
     void get_city_matrices();
 
@@ -124,6 +147,9 @@ private:
     glm::mat4 get_view_matrix();
     glm::mat4 get_proj_matrix();
     void rotate_camera(float theta, glm::vec3 axis);
+    void translate_camera(float scale);
+    bool key_pressed();
+    bool key_released();
 
     glm::vec4 m_light_direction; // The world-space position of the point light
 
