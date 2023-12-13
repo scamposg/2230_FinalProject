@@ -31,6 +31,8 @@ void create_l_system_string(std::vector<char> &previous, int recurse_count){
             final_string.push_back('B');
             final_string.push_back('B');
             final_string.push_back('B');
+            final_string.push_back('B');
+            final_string.push_back('B');
         }
         else {
             final_string.push_back(previous[i]);
@@ -101,14 +103,12 @@ void GLRenderer::get_city_matrices(){
     l_string.push_back('X');
     create_l_system_string(l_string,5);
 
-    std::vector<glm::mat4> prior_ctms;
-    glm::mat4 current_ctm(1);
-    prior_ctms.push_back(current_ctm);
+    glm::mat4 current_ctm = glm::mat4(1);
     direction dir = back;
 
     for (int i=0; i<std::size(l_string); i++){
         if (l_string[i] == 'B'){
-            glm::mat4 new_ctm = prior_ctms.back()*go_in_direction(dir);
+            glm::mat4 new_ctm = current_ctm*go_in_direction(dir);
             glm::vec4 test(0,0,0,1);
             test = new_ctm*test;
             if (!within_bounds(test,m_radius)){
@@ -117,9 +117,9 @@ void GLRenderer::get_city_matrices(){
             }
             m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
             current_ctm = new_ctm;
-            prior_ctms.back() = current_ctm;
-            m_road_z_buffer.push_back(test.z);
-            m_road_matrices.push_back(current_ctm);
+            float z = test.z;
+            m_road_z_buffer.push_back(z);
+            m_road_matrices.push_back(new_ctm);
 
             if (test.z < furthest_z) furthest_z = test.z;
             if (test.z > closest_z) closest_z = test.z;
@@ -129,8 +129,8 @@ void GLRenderer::get_city_matrices(){
             for (auto transform : building_transforms){
                 test = glm::vec4(0,0,0,1);
                 test = transform*test;
-                if (m_city_map[get_map_loc(test.x,test.z,m_radius)])
-                    continue;
+//                if (m_city_map[get_map_loc(test.x,test.z,m_radius)])
+//                    continue;
                 m_building_matrices.push_back(transform);
                 m_building_z_buffer.push_back(test.z);
                 m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
@@ -148,11 +148,9 @@ void GLRenderer::get_city_matrices(){
             continue;
         }
         if (l_string[i] == '['){
-            prior_ctms.push_back(current_ctm);
             continue;
         }
         if (l_string[i] == ']'){
-            prior_ctms.pop_back();
             continue;
         }
     }

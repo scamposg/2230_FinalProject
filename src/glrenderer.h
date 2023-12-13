@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
+#include <QTime>
 #include <QMouseEvent>
 #include <QKeyEvent>
 
@@ -40,17 +41,18 @@ protected:
     void paintGL()                       override; // Called every frame in a loop
     void resizeGL(int width, int height) override; // Called when window size changes
     void timerEvent(QTimerEvent *event)  override;
+
+    void rebuildMatrices();                        // Used for camera movement
+    void paint_roads();
+    void paint_buildings();
+
+private:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *e) override; // Used for camera movement
     void mouseMoveEvent(QMouseEvent *e)  override; // Used for camera movement
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *e)      override; // Used for camera movement
-    void rebuildMatrices();                        // Used for camera movement
-    void paint_roads();
-    void paint_buildings();
-
-private:
 
     // Tick Related Variables
     int m_timer;                                        // Stores timer which attempts to run ~60 times per second
@@ -60,6 +62,7 @@ private:
     std::unordered_map<Qt::Key, bool> m_keyMap;         // Stores whether keys are pressed or not
     Qt::Key pressed_key;
     bool is_key_pressed;
+    bool m_mouseDown;
 
     GLuint m_shader;     // Stores id of shader program
     GLuint m_shadow_shader;

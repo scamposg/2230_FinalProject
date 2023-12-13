@@ -1,6 +1,8 @@
 #include "glrenderer.h"
 
 #include <QCoreApplication>
+#include <QMouseEvent>
+#include <QKeyEvent>
 #include "src/shaderloader.h"
 #include <unistd.h>
 //#include <Windows.h>
@@ -18,6 +20,14 @@ GLRenderer::GLRenderer(QWidget *parent)
       m_zoom(2)
 {
     rebuildMatrices();
+    setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
+    m_keyMap[Qt::Key_W]       = false;
+    m_keyMap[Qt::Key_A]       = false;
+    m_keyMap[Qt::Key_S]       = false;
+    m_keyMap[Qt::Key_D]       = false;
+    m_keyMap[Qt::Key_Control] = false;
+    m_keyMap[Qt::Key_Space]   = false;
 }
 
 void GLRenderer::finish(){
@@ -294,22 +304,31 @@ void GLRenderer::keyReleaseEvent(QKeyEvent *event) {
 void GLRenderer::mousePressEvent(QMouseEvent *event) {
     // Set initial mouse position
     m_prevMousePos = event->pos();
+    m_mouseDown = true;
+}
+
+void GLRenderer::mouseReleaseEvent(QMouseEvent *event) {
+    if (!event->buttons().testFlag(Qt::LeftButton)) {
+        m_mouseDown = false;
+    }
 }
 
 void GLRenderer::mouseMoveEvent(QMouseEvent *event) {
     // Update angle member variables based on event parameters
-    m_angleX = (event->position().x() - m_prevMousePos.x())*M_PI / ((float) width()*4.f);
-    m_angleY = (event->position().y() - m_prevMousePos.y())*M_PI / ((float) height()*4.f);
-    m_prevMousePos = event->pos();
-    rotate_camera(m_angleX,glm::vec3(0,1,0));
-    rotate_camera(m_angleY,glm::cross(m_camera_look,m_camera_up));
-    rebuildMatrices();
+    if (m_mouseDown){
+        m_angleX = (event->position().x() - m_prevMousePos.x())*M_PI / ((float) width()*4.f);
+        m_angleY = (event->position().y() - m_prevMousePos.y())*M_PI / ((float) height()*4.f);
+        m_prevMousePos = event->pos();
+        rotate_camera(m_angleX,glm::vec3(0,1,0));
+        rotate_camera(m_angleY,glm::cross(m_camera_look,m_camera_up));
+        rebuildMatrices();
+    }
 }
 
 void GLRenderer::wheelEvent(QWheelEvent *event) {
     // Update zoom based on event parameter
-    m_zoom = event->angleDelta().y() / 100.f;
-    m_camera_pos -= (m_zoom*m_camera_pos);
+//    m_zoom = event->angleDelta().y() / 100.f;
+//    m_camera_pos -= (m_zoom*m_camera_pos);
     rebuildMatrices();
 }
 
@@ -318,7 +337,7 @@ void GLRenderer::timerEvent(QTimerEvent *event) {
     float deltaTime = elapsedms * 0.001f/3.f ;
 
     if (is_key_pressed){
-        translate_camera(deltaTime * move_speed);
+        translate_camera(deltaTime * 100.f);
     }
 
     // Use deltaTime and m_keyMap here to move around
