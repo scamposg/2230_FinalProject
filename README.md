@@ -2,7 +2,7 @@
 
 Our program is designed to recreate the city bending scene from the movie Inception. We use L-systems to procedurally generate the city geometry, texture and normal maps to paint the buildings, and Bezier curves to translate and rotate the buildings to mimic the bending effect.
 
-To use the program, click on the ‘Generate City’ button to generate the buildings, roads, and grass geometry. You can view the scene by clicking and dragging on the viewport as well as using the WASD keys to move the camera. To initiate the bending effect, click on the ‘Play/Pause Scene’ button which will gradually bend the scene in real time. The ‘Reset Scene’ button will reset the entire scene to its original flat appearance. Finally, the ‘Camera Jitter’ checkbox will add a small jitter to the camera for dramatic effect while the bending scene is playing. The program window can be resized at any time to change the resolution of the scene.
+To use the program, click on the ‘Generate City’ button to generate the buildings, roads, and grass geometry. You can view the scene by clicking and dragging on the viewport as well as using the WASD keys, CTRL, and Space Bar to move the camera. To initiate the bending effect, click on the ‘Play/Pause Scene’ button which will gradually bend the scene in real time. The ‘Reset Scene’ button will reset the entire scene to its original flat appearance. Finally, the ‘Camera Jitter’ checkbox will add a small jitter to the camera for dramatic effect while the bending scene is playing. The program window can be resized at any time to change the resolution of the scene.
 
 We implemented the following new features in our program:
 
