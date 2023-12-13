@@ -17,8 +17,8 @@ void GLRenderer::apply_bezier_matrices(glm::vec3 P0, glm::vec3 P1, glm::vec3 P2,
             std::make_shared<glm::mat4>
             (*m_original_road_matrices[i]*glm::translate(glm::vec3(0,curve.y-prior_pos.y,curve.z-prior_pos.z))*glm::rotate(-theta,glm::vec3(1,0,0)));
     }
-    P2 = P2 + glm::vec3(0,0.75,0.75);
-    P3 = P3 + glm::vec3(0,0.75,0.75);
+//    P2 = P2 + glm::vec3(0,0.75,0.75);
+//    P3 = P3 + glm::vec3(0,0.75,0.75);
     for (int i=0; i<m_building_matrices.size(); i++){
         float t = *m_building_z_buffer[i]/-m_radius;
         glm::vec3 curve = std::pow(1.f-t,3.f) * P0 + 3.f*std::pow(1.f-t,2.f)*t*P1 +

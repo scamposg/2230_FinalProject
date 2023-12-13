@@ -339,7 +339,7 @@ void GLRenderer::timerEvent(QTimerEvent *event) {
     float deltaTime = elapsedms * 0.001f/3.f ;
 
     if (is_key_pressed){
-        translate_camera(deltaTime * 100.f);
+        translate_camera(deltaTime * 10.f);
     }
 
     // Use deltaTime and m_keyMap here to move around
