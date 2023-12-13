@@ -135,14 +135,14 @@ void GLRenderer::get_city_matrices(){
                 dir = switch_dir(dir);
                 continue;
             }
-            if (m_city_map[get_map_loc(test.x,test.z,m_radius)]){
+            if (m_city_map[get_map_loc(int(test.x),int(test.z),int(m_radius))]){
                 current_ctm = *new_ctm;
                 continue;
             }
             if (m_road_matrices.size() > 500){
                 break;
             }
-            m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
+            m_city_map[get_map_loc(int(test.x),int(test.z),int(m_radius))] = 1;
             current_ctm = *new_ctm;
             std::shared_ptr<float> z = std::make_shared<float>(test.z);
             m_road_z_buffer.push_back(z);
@@ -156,11 +156,11 @@ void GLRenderer::get_city_matrices(){
             for (auto transform : building_transforms){
                 test = glm::vec4(0,0,0,1);
                 test = transform*test;
-                if (m_city_map[get_map_loc(test.x,test.z,m_radius)])
+                if (m_city_map[get_map_loc(int(test.x),int(test.z),int(m_radius))])
                     continue;
                 m_building_matrices.push_back(std::make_shared<glm::mat4>(transform));
                 m_building_z_buffer.push_back(std::make_shared<float>(test.z));
-                m_city_map[get_map_loc(test.x,test.z,m_radius)] = 1;
+                m_city_map[get_map_loc(int(test.x),int(test.z),int(m_radius))] = 1;
             }
 
 
@@ -184,6 +184,16 @@ void GLRenderer::get_city_matrices(){
             continue;
         }
     }
+
+    for (int j=0; j<m_city_map.size(); j++){
+        if (m_city_map[j] != 1){
+            float x = float(j % int(m_radius)) - (m_radius/2.f);
+            float z = -std::floor(float(j)/m_radius);
+            glm::mat4 grass = glm::translate(glm::vec3(x,0,z));
+            m_grass_matrices.push_back(std::make_shared<glm::mat4>(grass));
+            m_grass_z_buffer.push_back(std::make_shared<float>(z));
+        }
+    }
     return;
 }
 
@@ -198,6 +208,7 @@ void GLRenderer::generate_city(){
     m_building_z_buffer.clear();
     get_city_matrices();
     m_original_road_matrices = m_road_matrices;
+    m_original_grass_matrices = m_grass_matrices;
     m_original_building_matrices = m_building_matrices;
 //    apply_bezier_matrices(m_curve_OG_0,m_curve_OG_1,m_curve_OG_2,m_curve_OG_3);
     update();

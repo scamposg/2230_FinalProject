@@ -66,6 +66,8 @@ qt_add_resources(${PROJECT_NAME} "Resources"
     resources/textures/facade_normal11.png
   resources/textures/road_diffuse.jpeg
   resources/textures/road_normal.png
+  resources/textures/grass_diffuse.png
+  resources/textures/grass_normal.png
   resources/shaders/default.vert
   resources/shaders/default.frag
   resources/shaders/shadow.vert

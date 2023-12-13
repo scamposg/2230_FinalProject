@@ -35,7 +35,8 @@ void main() {
     float ambient = k_a;
     vec4 bumpedNormal = CalcBumpedNormal();
     //vec4 bumpedNormal = normalize(vec4(world_space_normal,0.f));
-    vec4 surface_to_light_ray = normalize(vec4(world_space_light_position,0.f) - vec4(world_space_position, 0.f));
+//    vec4 surface_to_light_ray = normalize(vec4(world_space_light_position,0.f) - vec4(world_space_position, 0.f));
+    vec4 surface_to_light_ray = normalize(vec4(-world_space_light_position,0.f));
     // diffuse = kd * dot ( normal, surface to light )
     float diffuse = k_d * clamp(dot(bumpedNormal, surface_to_light_ray),0.f,1.f);
     vec4 reflected_ray = normalize(reflect(-surface_to_light_ray,bumpedNormal));

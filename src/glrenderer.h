@@ -46,6 +46,7 @@ protected:
     void rebuildMatrices();                        // Used for camera movement
     void paint_roads();
     void paint_buildings();
+    void paint_grass();
 
 private:
     void keyPressEvent(QKeyEvent *event) override;
@@ -92,6 +93,13 @@ private:
     GLuint m_road_normal_texture;
     std::vector<float> generateRoadData();
 
+    std::vector<std::shared_ptr<glm::mat4>> m_grass_matrices;
+    std::vector<std::shared_ptr<glm::mat4>> m_original_grass_matrices;
+    std::vector<std::shared_ptr<float>> m_grass_z_buffer;
+    QImage m_grass_image;
+    GLuint m_grass_texture;
+    QImage m_grass_normal_image;
+    GLuint m_grass_normal_texture;
 
     void get_city_matrices();
 
