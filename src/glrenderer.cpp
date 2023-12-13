@@ -182,27 +182,12 @@ void GLRenderer::paintGL()
 {
     // Clear screen color and depth before painting
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shadow_map();
     paint_roads();
     paint_buildings();
     paint_grass();
 
 }
 
-void GLRenderer::shadow_map() {
-    for (int i = 0; i < m_building_matrices.size(); i++) {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_shadow_framebuffer);
-        glViewport(0, 0, size().width() * m_device_pixel_ratio, size().height() * m_device_pixel_ratio);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(m_shadow_shader);
-        glBindVertexArray(m_cube_vao);
-        glm::mat4 endMatrix = m_depthMVP * m_building_matrices[i];
-        glUniformMatrix4fv(glGetUniformLocation(m_shadow_shader,"shadow_depth_matrix"), 1, GL_FALSE, &endMatrix[0][0]);
-        glDrawArrays(GL_TRIANGLES, 0, m_cubeData.size() / 3);
-        glBindVertexArray(0);
-        glUseProgram(0);
-    }
-}
 
 void GLRenderer::paint_buildings(){
 

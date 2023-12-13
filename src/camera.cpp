@@ -66,9 +66,9 @@ glm::mat4 GLRenderer::get_proj_matrix() {
                       0.f,1.f,0.f,0.f,
                       0.f,0.f,1.f/(1.f+c),-1.f,
                       0.f,0.f,-c/(1.f+c),0.f);
-    glm::mat4 scale(1.f/(far*tan(theta_w/2.f)),0.f,0.f,0.f,
-                    0.f,1.f/(far*tan(theta_h/2.f)),0.f,0.f,
-                    0.f,0.f,1.f/far,0.f,
+    glm::mat4 scale(1.f/(m_far_plane*tan(theta_w/2.f)),0.f,0.f,0.f,
+                    0.f,1.f/(m_far_plane*tan(theta_h/2.f)),0.f,0.f,
+                    0.f,0.f,1.f/m_far_plane,0.f,
                     0.f,0.f,0.f,1.f);
     return z_remap*unhinge*scale;
 }
